@@ -1,0 +1,2 @@
+queue: redis-server
+sidekiq: bundle exec sidekiq

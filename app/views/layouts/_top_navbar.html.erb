@@ -1,0 +1,89 @@
+<% if current_user.present? %>
+  <nav class="bg-gray-800">
+    <div class="mx-auto max-w-full px-2 sm:px-6 lg:px-8">
+      <div class="relative flex h-16 items-center justify-between">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between">
+            <!-- Mobile menu button -->
+            <button type="button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white sm:hidden" id="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false">
+              <span class="sr-only">Open main menu</span>
+              <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+            <!-- PifuGlow logo -->
+            <div class="flex flex-shrink-0 items-center text-white font-bold ml-2 sm:ml-0">
+              <%= link_to "PifuGlow", root_path, target: "_self", class: "no-underline text-white" %>
+            </div>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex">
+            <div class="flex space-x-4">
+              <%# if current_user&.role.nil? && !current_user&.subscribed? %>
+                <%#= link_to  "Pricing" , pricing_path, class: "text-gray-300 hover:text-white rounded-md px-3 py-2 text-sm font-medium #{'text-white rounded-md px-3 py-2 text-sm font-medium' if current_page?(pricing_path)}" %>
+              <%# end %>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <!-- Profile dropdown -->
+          <div class="relative ml-3">
+            <div>
+              <button type="button" class="relative flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <span class="absolute -inset-1.5"></span>
+                <span class="sr-only">Open user menu</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="h-8 w-8 rounded-full">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+              </button>
+            </div>
+            <div class="absolute right-0 z-10 mt-2 w-48 text-center origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" id="user-menu" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+              <div class="flex flex-col items-center">
+                <% if current_user.present? %>
+                  <%#= link_to "My Automations", automations_path, class: "block px-4 py-2 text-sm" %>
+                  <%#= link_to "My Images", ai_images_path, class: "block px-4 py-2 text-sm" %>
+                  <%= link_to 'Profile', edit_user_registration_path(current_user), class: 'block px-4 py-2 text-sm' %>
+                  <%# if current_user&.subscribed? %>
+                    <%#= link_to "Manage Subscription", pricing_path, class: "block px-4 py-2 text-sm" %>
+                  <%# end %>
+                  <%#= link_to 'Accounts', authentications_path, class: 'block px-4 py-2 text-sm' %>
+                  <%= button_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo: false }, class: "block px-4 py-2 text-sm bg-white" %>
+                <% else %>
+                  <%= link_to 'Login', login_path, class: 'block px-4 py-2 text-sm' %>
+                  <%= link_to 'Sign Up', new_user_registration_path, class: 'block px-4 py-2 text-sm' %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="sm:hidden" id="mobile-menu">
+      <div class="space-y-1 px-2 pb-3 pt-2">
+        <%# if current_user&.role.nil? && !current_user&.subscribed? %>
+          <%#= link_to  "Pricing" , pricing_path, class: "block rounded-md px-3 py-2 text-base font-medium #{current_page?(pricing_path) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" %>
+        <%# end %>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    $(document).ready(function(){
+      // Toggle the main menu on mobile
+      $('#mobile-menu-button').click(function(){
+        $('#mobile-menu').toggleClass('hidden');
+      });
+      
+      // Toggle the user menu
+      $('#user-menu-button').click(function(){
+        var userMenu = $('#user-menu');
+        userMenu.toggleClass('hidden');
+      });
+
+      $('#open-hub-dropdown').click(function(){
+        $('#hub-menu').toggleClass('hidden');
+      });
+    });
+  </script>
+<% end %>
