@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  get 'skincare_analyses/new'
+  get 'skincare_analyses/create'
   
   devise_for :users, controllers: { sessions: 'users/sessions', passwords: 'users/passwords', registrations: 'users/registrations', omniauth_callbacks: 'users/omniauth_callbacks', confirmations: 'users/confirmations' }
   get 'auth/failure', to: 'users/omniauth_callbacks#failure'
@@ -16,12 +18,8 @@ Rails.application.routes.draw do
     get "logout", to: "devise/sessions#destroy"
   end
 
-  resources :code_mappings, only: [:new, :create] do
-    member do
-      get :export
-    end
-  end
-  root to: "code_mappings#new"
+  resources :skincare_analyses, only: [:new, :create]
+  root to: "skincare_analyses#new"
 
   scope controller: :static do
     get :terms
@@ -30,7 +28,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :code_mappings, only: [:create]
     end
   end
 
