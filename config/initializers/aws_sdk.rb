@@ -7,5 +7,8 @@ Aws.config.update({
   credentials: Aws::Credentials.new(backblaze_key_id, backblaze_app_key),
   endpoint: 'https://s3.us-east-005.backblazeb2.com', # Adjust as necessary for your B2 bucket endpoint
   force_path_style: true,
-  http_wire_trace: Rails.env.development? # Enable HTTP wire traces in development for debugging
+  http_wire_trace: Rails.env.development?, # Enable HTTP wire traces in development for debugging
+  compute_checksums: false, # Disable checksum computation to avoid sending headers like x-amz-checksum-crc32
+  request_checksum_calculation: "never", # Explicitly disable request checksums
+  response_checksum_validation: "never" # Explicitly disable response checksum validation
 })
