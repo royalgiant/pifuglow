@@ -73,10 +73,7 @@ class SkincareAnalysesController < ApplicationController
   end
 
   def send_analysis_email(email, diagnosis)
-    # Placeholder for email sending logic
-    # In a real app, use ActionMailer or a service like SendGrid
     Rails.logger.info "Sending analysis email to #{email} with diagnosis: #{diagnosis.truncate(100)}"
-    # Example using ActionMailer (uncomment and configure if needed):
-    # SkincareAnalysisMailer.with(email: email, diagnosis: diagnosis).analysis_result.deliver_later
+    SkincareAnalysisMailer.with(email: email, diagnosis: diagnosis).analysis_result.deliver_now
   end
 end
