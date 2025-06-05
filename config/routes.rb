@@ -32,16 +32,17 @@ Rails.application.routes.draw do
   end
 
   # For sidekiq dashboard
-  sidekiq_username = Rails.application.credentials.dig(Rails.env.to_sym, :sidekiqweb, :username)
-  sidekiq_password = Rails.application.credentials.dig(Rails.env.to_sym, :sidekiqweb, :password)
+  sidekiq_creds = Rails.application.credentials.dig(Rails.env.to_sym, :sidekiqweb)
 
-  if sidekiq_username.nil? || sidekiq_password.nil?
-    Rails.logger.error "Sidekiq web credentials are not set!"
-  else
-    Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
-      ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(sidekiq_username)) &
-      ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(sidekiq_password))
-    end
+  Sidekiq::Web.use(Rack::Auth::Basic) do |username, password|
+    ActiveSupport::SecurityUtils.secure_compare(
+      ::Digest::SHA256.hexdigest(username),
+      ::Digest::SHA256.hexdigest(sidekiq_creds[:username])
+    ) &
+    ActiveSupport::SecurityUtils.secure_compare(
+      ::Digest::SHA256.hexdigest(password),
+      ::Digest::SHA256.hexdigest(sidekiq_creds[:password])
+    )
   end
 
   mount Sidekiq::Web => '/sidekiq'

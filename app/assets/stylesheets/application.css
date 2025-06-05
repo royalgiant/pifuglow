@@ -12,16 +12,4 @@
  *
  *= require_tree .
  *= require_self
- *= require select2
  */
-/* Custom padding for mobile */
-.pb-200 {
-  padding-bottom: 200%;
-}
-
-/* Custom padding for desktop */
-@media (min-width: 768px) {
-  .md\:pb-250 {
-    padding-bottom: 250%;
-  }
-}

@@ -93,21 +93,21 @@ aliases:
 #
 accessories:
   # Reuse db from keepviews
-  # db:
-  #   image: postgres:16
-  #   host: 95.216.161.144
-  #   port: 5432
-  #   env:
-  #     clear:
-  #       POSTGRES_USER: postgres
-  #       POSTGRES_DB: pifuglow_production
-  #       RAILS_ENV: production
-  #     secret:
-  #       - POSTGRES_PASSWORD
-  #   files:
-  #     - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
-  #   directories:
-  #     - data:/var/lib/postgresql/data
+  db:
+    image: postgres:16
+    host: 95.216.161.144
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: pifuglow_production
+        RAILS_ENV: production
+      secret:
+        - POSTGRES_PASSWORD
+    files:
+      - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - data:/var/lib/postgresql/data
   postgres-backups:
     image: eeshugerman/postgres-backup-s3:16
     host: 95.216.161.144
