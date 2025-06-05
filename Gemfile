@@ -76,6 +76,7 @@ gem 'stripe'
 
 # AI
 gem "ruby-openai"
+gem 'ruby-anthropic'
 
 # Sitemap
 gem 'sitemap_generator'

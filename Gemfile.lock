@@ -416,6 +416,10 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.4)
+    ruby-anthropic (0.4.2)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-openai (8.1.0)
       event_stream_parser (>= 0.3.0, < 2.0.0)
       faraday (>= 1)
@@ -567,6 +571,7 @@ DEPENDENCIES
   redis (~> 4.0)
   roo (~> 2.10)
   rspec-rails
+  ruby-anthropic
   ruby-openai
   sass-rails (~> 6)
   select2-rails
