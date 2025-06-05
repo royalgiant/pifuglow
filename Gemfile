@@ -87,6 +87,7 @@ gem "sidekiq", "~> 7.2.2"
 gem "sidekiq-cron", "~> 1.12"
 # Tailwind CSS
 gem "tailwindcss-rails"
+gem 'premailer-rails'
 
 # For making concurrent requests
 gem 'concurrent-ruby', require: 'concurrent'

@@ -39,7 +39,7 @@ class ClaudeAnalysisService
 
       client.messages(
         parameters: {
-          model: "claude-3-opus-20240229",
+          model: "claude-3-sonnet-20240229",
           system: system_prompt,
           messages: [
             {
