@@ -16,9 +16,10 @@ class ClaudeAnalysisService
       1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
       2. Describe the severity of each condition (mild, moderate, severe).
       3. Suggest potential causes (e.g., environmental factors, diet, skincare routine).
-      4. Recommend skincare improvements, treatments, products, and routines.
-      5. Recommend diet plans for the user.
+      4. Recommend skincare products and routines to treat the skin conditions. Provide specific products & brands (e.g CeraVe Moisturizing Cream, CeraVe PM Facial Cleanser, Korean skincare products, etc. that will help the user).
+      5. Recommend diet plans for the user. Provide a list of specific ingredients and how they help the skin condition (e.g. leafy greens, salmon, ginger, lemons, etc.).
       6. Highlight any positive aspects of the skin (e.g., good hydration, even tone).
+      Make your response concise and to the point and at a 5th grade reading level.
     PROMPT
   end
 

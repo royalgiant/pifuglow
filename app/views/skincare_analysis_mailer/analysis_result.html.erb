@@ -15,17 +15,24 @@
       <!-- Content -->
       <div class="p-6">
         <p class="text-gray-800 mb-4">Dear <%= @email.split('@').first.capitalize %>,</p>
-        <p class="text-gray-800 mb-4">We’ve analyzed your selfie and here are your personalized skincare insights:</p>
+        <p class="text-gray-800 mb-4">We’ve analyzed your selfie, shown below, and here are your personalized skincare insights:</p>
+        
+        <!-- Image -->
+        <div class="mb-4">
+          <img src="<%= @image_url %>" alt="Your Selfie" class="max-w-full h-auto rounded-md border border-gray-200">
+        </div>
+
+        <!-- Diagnosis -->
         <div class="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
           <pre class="text-gray-700 whitespace-pre-wrap"><%= @diagnosis %></pre>
         </div>
         <p class="text-gray-800 mb-4">Thank you for using our service! If you have any questions, feel free to reply to this email.</p>
-        <p class="text-gray-800">Best regards,<br>The Skincare App Team</p>
+        <p class="text-gray-800">Best regards,<br>The PifuGlow Team</p>
       </div>
 
       <!-- Footer -->
       <div class="bg-gray-100 text-gray-600 text-center py-4 rounded-b-lg text-sm">
-        <p>© <%= Time.current.year %> Skincare App. All rights reserved.</p>
+        <p>© <%= Time.current.year %> PifuGlow. All rights reserved.</p>
       </div>
     </div>
   </body>

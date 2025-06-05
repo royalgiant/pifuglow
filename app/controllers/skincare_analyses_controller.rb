@@ -15,11 +15,12 @@ class SkincareAnalysesController < ApplicationController
             analysis_result = ClaudeAnalysisService.new.analyze_image(image_url)
             @skincare_analysis.update!(diagnosis: analysis_result[:diagnosis])
             # Notify user via email (placeholder for email sending logic)
-            send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis])
+            send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url)
             flash[:success] = "Image uploaded successfully. Please check your email for your analysis."
             redirect_to root_path
           rescue StandardError => e
             Rails.logger.error("Claude analysis failed: #{e.message}")
+            send_analysis_email(@skincare_analysis.email, "Analysis failed. We’ll retry later.", image_url)
             flash[:success] = "Image uploaded successfully, but analysis failed. We’ll send the analysis to your email later."
             redirect_to root_path
           end
@@ -72,8 +73,8 @@ class SkincareAnalysesController < ApplicationController
     end
   end
 
-  def send_analysis_email(email, diagnosis)
+  def send_analysis_email(email, diagnosis, image_url)
     Rails.logger.info "Sending analysis email to #{email} with diagnosis: #{diagnosis.truncate(100)}"
-    SkincareAnalysisMailer.with(email: email, diagnosis: diagnosis).analysis_result.deliver_now
+    SkincareAnalysisMailer.with(email: email, diagnosis: diagnosis, image_url: image_url).analysis_result.deliver_now
   end
 end
