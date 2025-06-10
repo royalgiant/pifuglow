@@ -4,13 +4,20 @@ class SkincareAnalysesController < ApplicationController
   end
 
   def create
+    recent_analysis = SkincareAnalysis.where(email: skincare_analysis_params[:email]).order(created_at: :desc).first
     @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
+
+    if recent_analysis && recent_analysis.created_at > 7.days.ago
+      flash[:notice] = "You can only get a free skin analysis every 7 days. Please come back in a week!"
+      redirect_to root_path
+      return
+    end
+
     if @skincare_analysis.valid?
       image_url = handle_image_processing(skincare_analysis_params)
       if image_url
         @skincare_analysis.image_url = image_url
         if @skincare_analysis.save
-          # Analyze the image with Claude and update the diagnosis
           begin
             analysis_result = ClaudeAnalysisService.new.analyze_image(image_url)
             @skincare_analysis.update!(diagnosis: analysis_result[:diagnosis])
