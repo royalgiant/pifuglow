@@ -1,0 +1,30 @@
+<table class="w-full border-collapse">
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="border p-2 text-left">Product Title</th>
+      <th class="border p-2 text-left">Product Category</th>
+      <th class="border p-2 text-left">Product Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr class="hover:bg-gray-100">
+        <td class="border p-2">
+          <%= link_to product.title, product.url, target: "_blank", class: "text-blue-500 hover:underline" %>
+        </td>
+        <td class="border p-2">
+          <%= product.category %>
+        </td>
+        <td class="border p-2 text-center">
+          <% if product.images.present? %>
+            <%= link_to product.images, target: "_blank" do %>
+              <%= image_tag product.images, alt: product.title, class: "max-w-[200px] max-h-[200px] object-contain inline-block" %>
+            <% end %>
+          <% else %>
+            <span class="text-gray-500">No image available</span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

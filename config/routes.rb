@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     get "logout", to: "devise/sessions#destroy"
   end
 
+  resources :products, only: [:index]
   resources :skincare_analyses, only: [:new, :create]
   root to: "skincare_analyses#new"
 
