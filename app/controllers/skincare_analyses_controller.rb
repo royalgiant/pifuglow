@@ -1,6 +1,11 @@
 class SkincareAnalysesController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:create], if: -> { request.format.json? }
   def new
     @skincare_analysis = SkincareAnalysis.new
+    respond_to do |format|
+      format.html
+      format.json { render json: { message: "Use POST to /skincare_analyses to submit an image" }, status: :ok }
+    end
   end
 
   def create
@@ -8,8 +13,13 @@ class SkincareAnalysesController < ApplicationController
     @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
 
     if recent_analysis && recent_analysis.created_at > 7.days.ago
-      flash[:notice] = "You can only get a free skin analysis every 7 days. Please come back in a week!"
-      redirect_to root_path
+      respond_to do |format|
+        format.html do
+          flash[:notice] = "You can only get a free skin analysis every 7 days. Please come back in a week!"
+          redirect_to root_path
+        end
+        format.json { render json: { error: "You can only get a free skin analysis every 7 days. Please try again later." }, status: :too_many_requests }
+      end
       return
     end
 
@@ -21,28 +31,63 @@ class SkincareAnalysesController < ApplicationController
           begin
             analysis_result = ClaudeAnalysisService.new.analyze_image(image_url)
             @skincare_analysis.update!(diagnosis: analysis_result[:diagnosis])
-            # Notify user via email (placeholder for email sending logic)
             send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url)
-            flash[:success] = "Image uploaded successfully. Please check your email for your analysis."
-            redirect_to root_path
+            respond_to do |format|
+              format.html do
+                flash[:success] = "Image uploaded successfully. Please check your email for your analysis."
+                redirect_to root_path
+              end
+              format.json do
+                render json: { 
+                  message: "Analysis completed successfully",
+                  diagnosis: analysis_result[:diagnosis],
+                  image_url: image_url
+                }, status: :created
+              end
+            end
           rescue StandardError => e
             Rails.logger.error("Claude analysis failed: #{e.message}")
             send_analysis_email(@skincare_analysis.email, "Analysis failed. We’ll retry later.", image_url)
-            flash[:success] = "Image uploaded successfully, but analysis failed. We’ll send the analysis to your email later."
-            redirect_to root_path
+            respond_to do |format|
+              format.html do
+                flash[:success] = "Image uploaded successfully, but analysis failed. We’ll send the analysis to your email later."
+                redirect_to root_path
+              end
+              format.json do
+                render json: { 
+                  message: "Image uploaded, but analysis failed. Results will be emailed later.",
+                  image_url: image_url
+                }, status: :accepted
+              end
+            end
           end
         else
-          flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
-          render :new, status: :unprocessable_entity
+          respond_to do |format|
+            format.html do
+              flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
+              render :new, status: :unprocessable_entity
+            end
+            format.json { render json: { error: @skincare_analysis.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+          end
         end
       else
         @skincare_analysis.errors.add(:image_url, "failed to upload. Please try again.")
-        flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
-        render :new, status: :unprocessable_entity
+        respond_to do |format|
+          format.html do
+            flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
+            render :new, status: :unprocessable_entity
+          end
+          format.json { render json: { error: @skincare_analysis.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+        end
       end
     else
-      flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.html do
+          flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
+          render :new, status: :unprocessable_entity
+        end
+        format.json { render json: { error: @skincare_analysis.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+      end
     end
   end
 
