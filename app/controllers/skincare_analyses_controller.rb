@@ -29,7 +29,7 @@ class SkincareAnalysesController < ApplicationController
         @skincare_analysis.image_url = image_url
         if @skincare_analysis.save
           begin
-            analysis_result = ClaudeAnalysisService.new.analyze_image(image_url)
+            analysis_result = OpenaiAnalysisService.new.analyze_image(image_url)
             @skincare_analysis.update!(diagnosis: analysis_result[:diagnosis])
             send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url)
             respond_to do |format|
@@ -46,7 +46,7 @@ class SkincareAnalysesController < ApplicationController
               end
             end
           rescue StandardError => e
-            Rails.logger.error("Claude analysis failed: #{e.message}")
+            Rails.logger.error("OpenAI analysis failed: #{e.message}")
             send_analysis_email(@skincare_analysis.email, "Analysis failed. We’ll retry later.", image_url)
             respond_to do |format|
               format.html do
