@@ -7,20 +7,10 @@ class User < ApplicationRecord
 
   attr_accessor :skip_validation
 
+  validates :email, presence: true, uniqueness: true
+  validates :uid, uniqueness: { scope: :provider }, allow_nil: true
   validates_presence_of :first_name, unless: :skip_validation
   validates_presence_of :last_name, unless: :skip_validation
-
-  has_many :buzz_terms, dependent: :destroy
-  has_many :walls, dependent: :destroy
-  has_many :subscriptions, dependent: :destroy
-  has_many :shopify_shops, dependent: :destroy
-
-  STARTER = "starter".freeze
-  LAUNCH = "launch".freeze
-  GROW = "grow".freeze
-  ADMIN = "admin".freeze
-  SHOPIFY_TYPE = "shopify".freeze
-  STRIPE_TYPE = "stripe".freeze
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
@@ -43,6 +33,11 @@ class User < ApplicationRecord
 
   def is_admin?
     self.role == ADMIN
+  end
+
+  # Allow users to sign in without password if they use social auth
+  def password_required?
+    provider.blank? && super
   end
          
 end

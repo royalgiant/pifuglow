@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
     end
+    post 'auth/social', to: 'auth#social'
   end
 
   # For sidekiq dashboard
