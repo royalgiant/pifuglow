@@ -36,7 +36,7 @@ class SkincareAnalysesController < ApplicationController
           begin
             analysis_result = OpenaiAnalysisService.new.analyze_image(image_url)
             @skincare_analysis.update!(diagnosis: analysis_result[:diagnosis])
-            send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url)
+            send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url) if !mobile_request?
             respond_to do |format|
               format.html do
                 flash[:success] = "Image uploaded successfully. Please check your email for your analysis."

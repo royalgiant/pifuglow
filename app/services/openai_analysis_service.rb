@@ -2,16 +2,16 @@ class OpenaiAnalysisService
   MAX_RETRIES = 10
   INITIAL_DELAY = 1
 
-  def analyze_image(image_url)
-    prompt = generate_analysis_prompt
+  def analyze_image(image_url, mobile_request = false)
+    prompt = generate_analysis_prompt(mobile_request)
     response = call_openai_api(prompt, image_url)
     parse_openai_response(response)
   end
 
   private
 
-  def generate_analysis_prompt
-    <<~PROMPT
+  def generate_analysis_prompt(mobile_request)
+    base_prompt = <<~PROMPT
       Please analyze this selfie image for skin conditions and provide a diagnosis:
       1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
       2. Describe the severity of each condition (mild, moderate, severe).
@@ -25,6 +25,12 @@ class OpenaiAnalysisService
       6. Recommend diet plans for the user. Provide a list of specific ingredients and how they help the skin condition (e.g. leafy greens, salmon, ginger, lemons, etc.) in bullet points.
       Make your response concise and to the point and at a 5th grade reading level.
     PROMPT
+
+    if mobile_request
+      base_prompt += "\n\nReturn the response in JSON format with the following structure: steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'."
+    end
+
+    base_prompt
   end
 
   def system_prompt
