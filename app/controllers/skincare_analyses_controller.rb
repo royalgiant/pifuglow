@@ -1,5 +1,7 @@
 class SkincareAnalysesController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create], if: -> { request.format.json? }
+  skip_before_action :verify_authenticity_token, only: [:create], if: -> { 
+    request.format.json? || mobile_request?
+  }
   def new
     @skincare_analysis = SkincareAnalysis.new
     respond_to do |format|
@@ -9,6 +11,7 @@ class SkincareAnalysesController < ApplicationController
   end
 
   def create
+    request.format = :json if mobile_request?
     recent_analysis = SkincareAnalysis.where(email: skincare_analysis_params[:email]).order(created_at: :desc).first
     @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
 
@@ -123,6 +126,10 @@ class SkincareAnalysesController < ApplicationController
       Rails.logger.error("Failed to upload image to Backblaze: #{e.message}")
       nil
     end
+  end
+
+  def mobile_request?
+    request.headers['X-Mobile-App'] == 'true'
   end
 
   def send_analysis_email(email, diagnosis, image_url)
