@@ -30,6 +30,8 @@ class SkincareAnalysesController < ApplicationController
       image_url = handle_image_processing(skincare_analysis_params)
       if image_url
         @skincare_analysis.image_url = image_url
+        user = User.find_by(email: skincare_analysis_params[:email])
+        @skincare_analysis.user_id = user.id
         if @skincare_analysis.save
           begin
             analysis_result = OpenaiAnalysisService.new.analyze_image(image_url)
