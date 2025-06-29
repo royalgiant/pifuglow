@@ -2,6 +2,25 @@ class SkincareAnalysesController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create], if: -> { 
     request.format.json? || mobile_request?
   }
+
+  def index
+    @skincare_analyses = SkincareAnalysis.where(email: params[:email])
+    respond_to do |format|
+      format.html # for web
+      format.json { 
+        render json: @skincare_analyses.map do |analysis|
+          {
+            id: analysis.id,
+            image_url: analysis.image_url,
+            created_at: analysis.created_at.strftime('%m/%d/%Y'),
+            diagnosis: analysis.diagnosis,
+            email: analysis.email
+          }
+        end
+      }
+    end
+  end
+
   def new
     @skincare_analysis = SkincareAnalysis.new
     respond_to do |format|
@@ -30,13 +49,19 @@ class SkincareAnalysesController < ApplicationController
       image_url = handle_image_processing(skincare_analysis_params)
       if image_url
         @skincare_analysis.image_url = image_url
+        @skincare_analysis.request_type = mobile_request? ? true : false
         user = User.find_by(email: skincare_analysis_params[:email])
         @skincare_analysis.user_id = user.id
         if @skincare_analysis.save
           begin
-            analysis_result = OpenaiAnalysisService.new.analyze_image(image_url)
-            @skincare_analysis.update!(diagnosis: analysis_result[:diagnosis])
-            send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url) if !mobile_request?
+            analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, @skincare_analysis.request_type)
+            @skincare_analysis.diagnosis = analysis_result[:diagnosis]
+            if mobile_request?
+              @skincare_analysis.category = analysis_result[:diagnosis]["category"]
+            else
+              send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url) 
+            end
+            @skincare_analysis.save
             respond_to do |format|
               format.html do
                 flash[:success] = "Image uploaded successfully. Please check your email for your analysis."
@@ -99,7 +124,7 @@ class SkincareAnalysesController < ApplicationController
   private
 
   def skincare_analysis_params
-    params.require(:skincare_analysis).permit(:image_url, :email)
+    params.require(:skincare_analysis).permit(:image_url, :email, :request_type)
   end
 
   def handle_image_processing(skincare_analysis_params)

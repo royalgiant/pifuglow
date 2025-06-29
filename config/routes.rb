@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   end
 
   resources :products, only: [:index]
-  resources :skincare_analyses, only: [:new, :create]
+  resources :skincare_analyses, only: [:index, :show, :new, :create, :destroy]
   root to: "skincare_analyses#new"
 
   scope controller: :static do

@@ -5,7 +5,7 @@ class OpenaiAnalysisService
   def analyze_image(image_url, mobile_request = false)
     prompt = generate_analysis_prompt(mobile_request)
     response = call_openai_api(prompt, image_url)
-    parse_openai_response(response)
+    parse_openai_response(response, mobile_request)
   end
 
   private
@@ -14,7 +14,7 @@ class OpenaiAnalysisService
     base_prompt = <<~PROMPT
       Please analyze this selfie image for skin conditions and provide a diagnosis:
       1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
-      2. Describe the severity of each condition (mild, moderate, severe).
+      2. Describe the severity of each condition (mild, moderate, severe). The format should be like "Acne (mild to moderate)"
       3. Suggest potential causes (e.g., environmental factors, diet, skincare routine).
       4. Provide specific products & brands (e.g CeraVe Moisturizing Cream, CeraVe PM Facial Cleanser, Korean skincare products, etc.)that will help the user's skin issue (e.g. acne, dryness, redness, hyperpigmentation) in bullet points.
       5. Give specific steps in numbered bullet points using the products and brands you recommended in step 4 to help the user's skin issue. For example:
@@ -27,7 +27,7 @@ class OpenaiAnalysisService
     PROMPT
 
     if mobile_request
-      base_prompt += "\n\nReturn the response in JSON format with the following structure: steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'."
+      base_prompt += "\n\nReturn the response in JSON format with the following structure: steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'. Also, respond with key 'category' which identifies the photo as 1 of 3 types: 'skin', 'meal', 'product'."
     end
 
     base_prompt
@@ -79,9 +79,37 @@ class OpenaiAnalysisService
     raise "Timeout downloading image from #{image_url}: #{e.message}"
   end
 
-  def parse_openai_response(response)
+  def parse_openai_response(response, json_requested = false)
+    content = response.dig("choices", 0, "message", "content")
+    
+    if json_requested && content
+      # Try to extract and parse JSON if it's wrapped in markdown code blocks
+      if content.include?('```json')
+        json_match = content.match(/```json\s*(\{.*?\})\s*```/m)
+        if json_match
+          begin
+            parsed_content = JSON.parse(json_match[1])
+          rescue JSON::ParserError => e
+            Rails.logger.error "Failed to parse JSON from OpenAI response: #{e.message}"
+            parsed_content = content # Fall back to raw content
+          end
+        else
+          parsed_content = content
+        end
+      else
+        # Try to parse as direct JSON
+        begin
+          parsed_content = JSON.parse(content)
+        rescue JSON::ParserError
+          parsed_content = content
+        end
+      end
+    else
+      parsed_content = content
+    end
+
     {
-      diagnosis: response.dig("choices", 0, "message", "content"),
+      diagnosis: parsed_content,
       timestamp: Time.current,
       model_info: {
         name: response["model"],
