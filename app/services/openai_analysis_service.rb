@@ -14,7 +14,7 @@ class OpenaiAnalysisService
     base_prompt = <<~PROMPT
       Please analyze this selfie image for skin conditions and provide a diagnosis:
       1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
-      2. Describe the severity of each condition (mild, moderate, severe). The format should be like "Acne (mild to moderate)"
+      2. Describe the severity of each condition (mild, moderate, severe). The format should always be something like "Acne (mild to moderate)" in one line.
       3. Suggest potential causes (e.g., environmental factors, diet, skincare routine).
       4. Provide specific products & brands (e.g CeraVe Moisturizing Cream, CeraVe PM Facial Cleanser, Korean skincare products, etc.)that will help the user's skin issue (e.g. acne, dryness, redness, hyperpigmentation) in bullet points.
       5. Give specific steps in numbered bullet points using the products and brands you recommended in step 4 to help the user's skin issue. For example:

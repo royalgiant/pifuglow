@@ -32,92 +32,47 @@ class SkincareAnalysesController < ApplicationController
   def create
     request.format = :json if mobile_request?
     recent_analysis = SkincareAnalysis.where(email: skincare_analysis_params[:email]).order(created_at: :desc).first
-    @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
-
+    
     if recent_analysis && recent_analysis.created_at > 7.days.ago
-      respond_to do |format|
-        format.html do
-          flash[:notice] = "You can only get a free skin analysis every 7 days. Please come back in a week!"
-          redirect_to root_path
-        end
-        format.json { render json: { error: "You can only get a free skin analysis every 7 days. Please try again later." }, status: :too_many_requests }
-      end
+      render_rate_limit_error
       return
     end
-
+  
+    @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
+    
     if @skincare_analysis.valid?
       image_url = handle_image_processing(skincare_analysis_params)
       if image_url
+        # Set all attributes before the single save
         @skincare_analysis.image_url = image_url
-        @skincare_analysis.request_type = mobile_request? ? true : false
-        user = User.find_by(email: skincare_analysis_params[:email])
-        @skincare_analysis.user_id = user.id
-        if @skincare_analysis.save
-          begin
-            analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, @skincare_analysis.request_type)
-            @skincare_analysis.diagnosis = analysis_result[:diagnosis]
-            if mobile_request?
-              @skincare_analysis.category = analysis_result[:diagnosis]["category"]
-            else
-              send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url) 
-            end
-            @skincare_analysis.save
-            respond_to do |format|
-              format.html do
-                flash[:success] = "Image uploaded successfully. Please check your email for your analysis."
-                redirect_to root_path
-              end
-              format.json do
-                render json: { 
-                  message: "Analysis completed successfully",
-                  diagnosis: analysis_result[:diagnosis],
-                  image_url: image_url
-                }, status: :created
-              end
-            end
-          rescue StandardError => e
-            Rails.logger.error("OpenAI analysis failed: #{e.message}")
-            send_analysis_email(@skincare_analysis.email, "Analysis failed. We’ll retry later.", image_url)
-            respond_to do |format|
-              format.html do
-                flash[:success] = "Image uploaded successfully, but analysis failed. We’ll send the analysis to your email later."
-                redirect_to root_path
-              end
-              format.json do
-                render json: { 
-                  message: "Image uploaded, but analysis failed. Results will be emailed later.",
-                  image_url: image_url
-                }, status: :accepted
-              end
-            end
+        @skincare_analysis.request_type = mobile_request?
+        @skincare_analysis.user_id = find_user_id
+        
+        # Get analysis result before saving
+        begin
+          analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, mobile_request?)
+          @skincare_analysis.diagnosis = analysis_result[:diagnosis]
+          @skincare_analysis.category = analysis_result[:diagnosis]["category"] if mobile_request?
+          
+          # Single save with all data
+          if @skincare_analysis.save
+            # Send email only for web requests, after successful save
+            send_analysis_email(@skincare_analysis.email, analysis_result[:diagnosis], image_url) unless mobile_request?
+            render_success_response
+          else
+            render_error_response(@skincare_analysis.errors.full_messages.join(", "))
           end
-        else
-          respond_to do |format|
-            format.html do
-              flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
-              render :new, status: :unprocessable_entity
-            end
-            format.json { render json: { error: @skincare_analysis.errors.full_messages.join(", ") }, status: :unprocessable_entity }
-          end
+          
+        rescue StandardError => e
+          Rails.logger.error("OpenAI analysis failed: #{e.message}")
+          render_analysis_failed_response(image_url)
         end
       else
         @skincare_analysis.errors.add(:image_url, "failed to upload. Please try again.")
-        respond_to do |format|
-          format.html do
-            flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
-            render :new, status: :unprocessable_entity
-          end
-          format.json { render json: { error: @skincare_analysis.errors.full_messages.join(", ") }, status: :unprocessable_entity }
-        end
+        render_error_response(@skincare_analysis.errors.full_messages.join(", "))
       end
     else
-      respond_to do |format|
-        format.html do
-          flash[:error] = @skincare_analysis.errors.full_messages.join(", ")
-          render :new, status: :unprocessable_entity
-        end
-        format.json { render json: { error: @skincare_analysis.errors.full_messages.join(", ") }, status: :unprocessable_entity }
-      end
+      render_error_response(@skincare_analysis.errors.full_messages.join(", "))
     end
   end
 
@@ -162,5 +117,62 @@ class SkincareAnalysesController < ApplicationController
   def send_analysis_email(email, diagnosis, image_url)
     Rails.logger.info "Sending analysis email to #{email} with diagnosis: #{diagnosis.truncate(100)}"
     SkincareAnalysisMailer.with(email: email, diagnosis: diagnosis, image_url: image_url).analysis_result.deliver_now
+  end
+
+  def find_user_id
+    User.find_by(email: skincare_analysis_params[:email])&.id
+  end
+  
+  def render_rate_limit_error
+    respond_to do |format|
+      format.html do
+        flash[:notice] = "You can only get a free skin analysis every 7 days. Please come back in a week!"
+        redirect_to root_path
+      end
+      format.json { render json: { error: "You can only get a free skin analysis every 7 days. Please try again later." }, status: :too_many_requests }
+    end
+  end
+  
+  def render_success_response
+    respond_to do |format|
+      format.html do
+        flash[:success] = "Image uploaded successfully. Please check your email for your analysis."
+        redirect_to root_path
+      end
+      format.json do
+        render json: { 
+          message: "Analysis completed successfully",
+          diagnosis: @skincare_analysis.diagnosis,
+          image_url: @skincare_analysis.image_url
+        }, status: :created
+      end
+    end
+  end
+  
+  def render_analysis_failed_response(image_url)
+    send_analysis_email(@skincare_analysis.email, "Analysis failed. We'll retry later.", image_url) unless mobile_request?
+    
+    respond_to do |format|
+      format.html do
+        flash[:success] = "Image uploaded successfully, but analysis failed. We'll send the analysis to your email later."
+        redirect_to root_path
+      end
+      format.json do
+        render json: { 
+          message: "Image uploaded, but analysis failed. Results will be emailed later.",
+          image_url: image_url
+        }, status: :accepted
+      end
+    end
+  end
+  
+  def render_error_response(error_message)
+    respond_to do |format|
+      format.html do
+        flash[:error] = error_message
+        render :new, status: :unprocessable_entity
+      end
+      format.json { render json: { error: error_message }, status: :unprocessable_entity }
+    end
   end
 end
