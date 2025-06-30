@@ -4,7 +4,7 @@ class SkincareAnalysesController < ApplicationController
   }
 
   def index
-    @skincare_analyses = SkincareAnalysis.where(email: params[:email])
+    @skincare_analyses = SkincareAnalysis.where(email: params[:email]).order(created_at: :desc)
     respond_to do |format|
       format.html # for web
       format.json { 
@@ -14,7 +14,8 @@ class SkincareAnalysesController < ApplicationController
             image_url: analysis.image_url,
             created_at: analysis.created_at.strftime('%m/%d/%Y'),
             diagnosis: analysis.diagnosis,
-            email: analysis.email
+            email: analysis.email,
+            category: analysis.category
           }
         end
       }
@@ -143,7 +144,8 @@ class SkincareAnalysesController < ApplicationController
         render json: { 
           message: "Analysis completed successfully",
           diagnosis: @skincare_analysis.diagnosis,
-          image_url: @skincare_analysis.image_url
+          image_url: @skincare_analysis.image_url,
+          category: @skincare_analysis.category
         }, status: :created
       end
     end

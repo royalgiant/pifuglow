@@ -12,7 +12,9 @@ class OpenaiAnalysisService
 
   def generate_analysis_prompt(mobile_request)
     base_prompt = <<~PROMPT
-      Please analyze this selfie image for skin conditions and provide a diagnosis:
+      First, analyze whether the image is a selfie or a food picture.
+
+      If it's a selfie, please analyze this selfie image for skin conditions and provide a diagnosis:
       1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
       2. Describe the severity of each condition (mild, moderate, severe). The format should always be something like "Acne (mild to moderate)" in one line.
       3. Suggest potential causes (e.g., environmental factors, diet, skincare routine).
@@ -24,10 +26,21 @@ class OpenaiAnalysisService
       Give the steps in the morning and evening.
       6. Recommend diet plans for the user. Provide a list of specific ingredients and how they help the skin condition (e.g. leafy greens, salmon, ginger, lemons, etc.) in bullet points.
       Make your response concise and to the point and at a 5th grade reading level.
+
+      If it's a food picture, I want a granular breakdown of each item in antioxidants vs oxidant levels in percentages.
+      The response should be returned in json format. Here's an example:
+      "ingredients" => [ Congee with preserved vegetables: 40% oxidants, 60% antioxidants
+          Scallion pancake: 70% oxidants, 30% antioxidants
+          Fried dough stick (youtiao): 80% oxidants, 20% antioxidants ],
+      "total" => [Total meal average: 63% oxidants, 37% antioxidants],
+      "skin_health" => 4/10],
+      "category" => "meal"
     PROMPT
 
     if mobile_request
-      base_prompt += "\n\nReturn the response in JSON format with the following structure: steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'. Also, respond with key 'category' which identifies the photo as 1 of 3 types: 'skin', 'meal', 'product'."
+      base_prompt += "\n\nIf it's a selfie picture, return the response in JSON format with the following structure: 
+      steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'. 
+      Also, respond with key 'category' which identifies the photo as 1 of 3 types: 'skin', 'meal', 'product'."
     end
 
     base_prompt
