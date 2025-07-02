@@ -12,79 +12,105 @@ class OpenaiAnalysisService
 
   def generate_analysis_prompt(mobile_request, user)
     base_prompt = <<~PROMPT
-      First, analyze whether the image is a selfie or a food picture.
-  
-      If it's a selfie, please analyze this selfie image for skin conditions and provide a diagnosis:
+      Analyze this selfie image for skin conditions and provide a diagnosis:
+      1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
+      2. Describe the severity of each condition (mild, moderate, severe). The format should always be something like "Acne (mild to moderate)" in one line.
+      3. Suggest potential causes (e.g., environmental factors, diet, skincare routine).
+      4. Provide specific products & brands (e.g CeraVe Moisturizing Cream, CeraVe PM Facial Cleanser, Korean skincare products, etc.) that will help the user's skin issue (e.g. acne, dryness, redness, hyperpigmentation) in bullet points.
+      5. Give specific steps in numbered bullet points using the products and brands you recommended in step 4 to help the user's skin issue. For example:
+        - Step 1: Use the CeraVe PM Facial Cleanser to clean your face.
+        - Step 2: Use the Anua Heartleaf 77 Soothing Toner to tone your face.
+        - Step 3: Use the Skin1004 Snail 96 Mucin Power Essence to hydrate your face.
+      Give the steps in the morning and evening.
+      6. Recommend diet plans for the user. Provide a list of specific ingredients and how they help the skin condition (e.g. leafy greens, salmon, ginger, lemons, etc.) in bullet points.
       
-      Analyze the skin carefully and provide recommendations that consider:
-      - Current products the user is using: #{user.current_products.present? ? user.current_products : "None specified"}
-      - Main skin concerns: #{user.skin_problem.present? ? user.skin_problem : "General skin health"}
-      
-      Provide your analysis in a clear, actionable format at a 5th grade reading level.
-  
-      If it's a food picture, analyze each item for antioxidants vs oxidants levels.
-      The response should be returned in json format. Here's an example:
-      "ingredients" => [ Congee with preserved vegetables: 40% oxidants, 60% antioxidants
-          Scallion pancake: 70% oxidants, 30% antioxidants
-          Fried dough stick (youtiao): 80% oxidants, 20% antioxidants ],
-      "total" => [Total meal average: 63% oxidants, 37% antioxidants],
-      "skin_health" => 4/10],
-      "category" => "meal"
+      When giving your response, make sure to consider the user's current products: #{user.current_products.present? ? user.current_products : "None specified"} and main skin problem concerns: #{user.skin_problem.present? ? user.skin_problem : "General skin health"}.
+      Give your response in a concise and to the point manner and at a 5th grade reading level.
     PROMPT
   
     if mobile_request
       base_prompt += <<~MOBILE_PROMPT
-  
-      For selfie analysis, return response in JSON format with these exact keys:
-      
-      {
-        "condition": {
-          "primary_concerns": ["Acne (moderate)", "Dryness around cheeks"],
-          "severity": "The acne appears moderate with some inflammatory lesions. Skin shows signs of dehydration.",
-          "causes": ["Hormonal changes", "Over-cleansing", "Lack of moisturization"]
-        },
-        "products": [
-          "CeraVe Foaming Facial Cleanser - gentle cleansing without over-drying",
-          "The Ordinary Niacinamide 10% + Zinc 1% - reduces acne and oil production",
-          "CeraVe Daily Moisturizing Lotion - lightweight hydration",
-          "EltaMD UV Clear SPF 46 - non-comedogenic sun protection"
-        ],
-        "routine": {
-          "morning": [
-            "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
-            "Step 2: Apply The Ordinary Niacinamide serum", 
-            "Step 3: Moisturize with CeraVe Daily Moisturizing Lotion",
-            "Step 4: Apply EltaMD UV Clear SPF 46"
+        First, analyze whether the image is a selfie, food picture, or skincare product.
+        
+        If it's a selfie, return response in JSON format with these exact keys:
+        steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'.
+        
+        {
+          "condition": {
+            "primary_concerns": ["Acne (moderate)", "Dryness around cheeks"],
+            "severity": "The acne appears moderate with some inflammatory lesions. Skin shows signs of dehydration.",
+            "causes": ["Hormonal changes", "Over-cleansing", "Lack of moisturization"]
+          },
+          "products": [
+            "CeraVe Foaming Facial Cleanser - gentle cleansing without over-drying",
+            "The Ordinary Niacinamide 10% + Zinc 1% - reduces acne and oil production",
+            "CeraVe Daily Moisturizing Lotion - lightweight hydration",
+            "EltaMD UV Clear SPF 46 - non-comedogenic sun protection"
           ],
-          "evening": [
-            "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
-            "Step 2: Apply The Ordinary Niacinamide serum",
-            "Step 3: Moisturize with CeraVe PM Facial Moisturizing Lotion"
-          ]
-        },
-        "diet": [
-          "Salmon - omega-3 fatty acids reduce inflammation and support skin barrier",
-          "Spinach - vitamin A helps with skin cell turnover and acne healing",
-          "Blueberries - antioxidants protect against free radical damage",
-          "Green tea - anti-inflammatory properties help calm irritated skin",
-          "Avoid dairy and high-glycemic foods which can trigger acne flare-ups"
-        ],
-        "category": "skin"
-      }
-      
-      IMPORTANT INSTRUCTIONS:
+          "routine": {
+            "morning": [
+              "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
+              "Step 2: Apply The Ordinary Niacinamide serum", 
+              "Step 3: Moisturize with CeraVe Daily Moisturizing Lotion",
+              "Step 4: Apply EltaMD UV Clear SPF 46"
+            ],
+            "evening": [
+              "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
+              "Step 2: Apply The Ordinary Niacinamide serum",
+              "Step 3: Moisturize with CeraVe PM Facial Moisturizing Lotion"
+            ]
+          },
+          "diet": [
+            "Salmon - omega-3 fatty acids reduce inflammation and support skin barrier",
+            "Spinach - vitamin A helps with skin cell turnover and acne healing",
+            "Blueberries - antioxidants protect against free radical damage",
+            "Green tea - anti-inflammatory properties help calm irritated skin",
+            "Avoid dairy and high-glycemic foods which can trigger acne flare-ups"
+          ],
+          "category": "skin"
+        }
+    
+        If it's a food picture, analyze each item for antioxidants vs oxidants levels and return in JSON format:
+        {
+          "ingredients": [
+            "Congee with preserved vegetables: 40% oxidants, 60% antioxidants",
+            "Scallion pancake: 70% oxidants, 30% antioxidants",
+            "Fried dough stick (youtiao): 80% oxidants, 20% antioxidants"
+          ],
+          "total": ["Total meal average: 63% oxidants, 37% antioxidants"],
+          "skin_health": "4/10",
+          "category": "meal"
+        }
+        
+        If it's a skincare product, analyze the ingredients based on the user's skin problem (#{user.skin_problem.present? ? user.skin_problem : "general skin health"}) and return in JSON format:
+        {
+          "good_ingredients": [
+            "Niacinamide - reduces oil production and minimizes pores, excellent for acne-prone skin",
+            "Hyaluronic Acid - provides deep hydration without clogging pores",
+            "Salicylic Acid - gentle exfoliation helps unclog pores and reduce breakouts"
+          ],
+          "bad_ingredients": [
+            "Coconut Oil - highly comedogenic and can clog pores, may worsen acne",
+            "Fragrance - can cause irritation and inflammation, especially problematic for sensitive acne-prone skin",
+            "Isopropyl Myristate - known pore-clogging ingredient that can trigger breakouts"
+          ],
+          "category": "product"
+        }
+    
+        IMPORTANT INSTRUCTIONS:
         #{user.current_products.present? ? 
           "- The user currently uses: #{user.current_products}. Consider which of these products to keep, modify, or replace in your recommendations." : 
           "- The user hasn't specified current products, so provide a complete routine."
         }
         #{user.skin_problem.present? ? 
-          "- Focus recommendations on addressing: #{user.skin_problem}" : 
+          "- Focus recommendations on addressing: #{user.skin_problem}. For product analysis, specifically identify ingredients that help or harm this condition." : 
           "- Provide general skin health recommendations."
         }
         - If current products are good, mention keeping them and suggest complementary products
         - If current products may be causing issues, suggest gentler alternatives
         - Tailor the routine complexity based on what they're already doing
         - Make dietary recommendations specific to their skin concerns
+        - For product analysis, be specific about how each ingredient affects their particular skin concern
       MOBILE_PROMPT
     end
 
