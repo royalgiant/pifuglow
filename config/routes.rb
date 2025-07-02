@@ -29,6 +29,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      get 'users/settings', to: 'users#get_settings'
+      patch 'users/settings', to: 'users#update_settings'
     end
     post 'auth/social', to: 'auth#social'
   end
