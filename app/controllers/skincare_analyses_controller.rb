@@ -45,13 +45,14 @@ class SkincareAnalysesController < ApplicationController
       image_url = handle_image_processing(skincare_analysis_params)
       if image_url
         # Set all attributes before the single save
+        current_user = find_user
         @skincare_analysis.image_url = image_url
         @skincare_analysis.request_type = mobile_request?
-        @skincare_analysis.user_id = find_user_id
+        @skincare_analysis.user_id = current_user.id
         
         # Get analysis result before saving
         begin
-          analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, mobile_request?)
+          analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, mobile_request?, current_user)
           @skincare_analysis.diagnosis = analysis_result[:diagnosis]
           @skincare_analysis.category = analysis_result[:diagnosis]["category"] if mobile_request?
           
@@ -120,8 +121,8 @@ class SkincareAnalysesController < ApplicationController
     SkincareAnalysisMailer.with(email: email, diagnosis: diagnosis, image_url: image_url).analysis_result.deliver_now
   end
 
-  def find_user_id
-    User.find_by(email: skincare_analysis_params[:email])&.id
+  def find_user
+    User.find_by(email: skincare_analysis_params[:email])
   end
   
   def render_rate_limit_error
