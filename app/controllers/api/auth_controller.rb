@@ -70,7 +70,8 @@ class Api::AuthController < ApplicationController
       id: user.id,
       email: user.email,
       name: user.full_name,
-      provider: user.provider
+      provider: user.provider,
+      created_at: user.created_at
     }
   end
 end

@@ -33,11 +33,6 @@ class SkincareAnalysesController < ApplicationController
   def create
     request.format = :json if mobile_request?
     recent_analysis = SkincareAnalysis.where(email: skincare_analysis_params[:email]).order(created_at: :desc).first
-    
-    # if recent_analysis && recent_analysis.created_at > 7.days.ago
-    #   render_rate_limit_error
-    #   return
-    # end
   
     @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
     
