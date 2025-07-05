@@ -32,8 +32,19 @@ class SkincareAnalysesController < ApplicationController
 
   def create
     request.format = :json if mobile_request?
-    recent_analysis = SkincareAnalysis.where(email: skincare_analysis_params[:email]).order(created_at: :desc).first
-  
+
+    today_start = Time.current.beginning_of_day
+    today_end = Time.current.end_of_day
+    daily_analysis_count = SkincareAnalysis.where(
+      email: skincare_analysis_params[:email],
+      created_at: today_start..today_end
+    ).count
+    
+    if daily_analysis_count >= 5
+      render_error_response("During Beta, only 5 analyses can be ran a day")
+      return
+    end
+
     @skincare_analysis = SkincareAnalysis.new(skincare_analysis_params)
     
     if @skincare_analysis.valid?
