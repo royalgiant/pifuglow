@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   scope controller: :static do
     get :terms
     get :privacy
+    match :contact, via: [:get, :post]
   end
 
   namespace :api do
