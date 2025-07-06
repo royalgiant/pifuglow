@@ -70,7 +70,7 @@ class OpenaiAnalysisService
           "category": "skin"
         }
     
-        If it's a food picture, analyze each item for antioxidants vs oxidants levels and return in JSON format:
+        If it's a food picture, analyze each item for antioxidants vs oxidants levels. Make sure the percentage of oxidants and antioxidants add up to 100% and round up the the nearest integer, and return in JSON format:
         {
           "ingredients": [
             "Congee with preserved vegetables: 40% oxidants, 60% antioxidants",
@@ -79,6 +79,8 @@ class OpenaiAnalysisService
           ],
           "total": ["Total meal average: 63% oxidants, 37% antioxidants"],
           "skin_health": "4/10",
+          "total_oxidants": "63%",
+          "total_antioxidants": "37%",
           "category": "meal"
         }
         
