@@ -18,6 +18,8 @@ class Api::V1::UsersController < ApplicationController
       user: {
         id: user.id,
         email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
         current_products: user.current_products,
         skin_problem: user.skin_problem
       }
@@ -41,6 +43,8 @@ class Api::V1::UsersController < ApplicationController
         user: {
           id: user.id,
           email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
           current_products: user.current_products,
           skin_problem: user.skin_problem
         }
@@ -56,6 +60,6 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_settings_params
-    params.require(:user).permit(:current_products, :skin_problem)
+    params.require(:user).permit(:email, :first_name, :last_name, :current_products, :skin_problem)
   end
 end

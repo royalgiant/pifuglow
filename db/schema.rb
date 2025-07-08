@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_01_222223) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_09_033210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "error_logs", force: :cascade do |t|
+    t.string "context", null: false
+    t.text "error_message", null: false
+    t.string "error_code"
+    t.json "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["context"], name: "index_error_logs_on_context"
+    t.index ["created_at"], name: "index_error_logs_on_created_at"
+  end
 
   create_table "products", force: :cascade do |t|
     t.string "title", null: false
@@ -35,6 +46,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_222223) do
     t.string "category"
     t.boolean "request_type"
     t.index ["user_id"], name: "index_skincare_analyses_on_user_id"
+  end
+
+  create_table "user_identities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_user_identities_on_provider_and_uid", unique: true
+    t.index ["user_id"], name: "index_user_identities_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -65,4 +86,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_01_222223) do
   end
 
   add_foreign_key "skincare_analyses", "users"
+  add_foreign_key "user_identities", "users"
 end
