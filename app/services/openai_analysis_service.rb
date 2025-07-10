@@ -110,6 +110,7 @@ class OpenaiAnalysisService
         }
         - If current products are good, mention keeping them and suggest complementary products
         - If current products may be causing issues, suggest gentler alternatives
+        - Make sure all products recommended are noncomedogenic
         - Tailor the routine complexity based on what they're already doing
         - Make dietary recommendations specific to their skin concerns
         - For product analysis, be specific about how each ingredient affects their particular skin concern
