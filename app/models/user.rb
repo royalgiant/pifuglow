@@ -8,6 +8,7 @@ class User < ApplicationRecord
   attr_accessor :skip_validation
 
   has_many :user_identities, dependent: :destroy
+  has_many :skincare_analysis, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :uid, uniqueness: { scope: :provider }, allow_nil: true
