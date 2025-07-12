@@ -58,8 +58,12 @@ class Api::V1::UsersController < ApplicationController
         return
       end
     end
-    user_settings_params[:full_name] = "#{user_settings_params[:first_name]} #{user_settings_params[:last_name]}"
-    if user.update(user_settings_params)
+
+    params_with_full_name = user_settings_params.tap do |p|
+      p[:full_name] = "#{p[:first_name]} #{p[:last_name]}"
+    end
+
+    if user.update(params_with_full_name)
       render json: {
         message: 'Settings updated successfully. If you updated your email, please confirm your email.',
         user: {
@@ -82,6 +86,6 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_settings_params
-    params.require(:user).permit(:email, :first_name, :last_name, :current_products, :skin_problem)
+    params.require(:user).permit(:email, :first_name, :last_name, :current_products, :skin_problem, :full_name)
   end
 end
