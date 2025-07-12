@@ -40,8 +40,8 @@ class SkincareAnalysesController < ApplicationController
       created_at: today_start..today_end
     ).count
     
-    if daily_analysis_count >= 5
-      render_error_response("During Beta, only 5 analyses can be ran a day")
+    if daily_analysis_count >= 10
+      render_error_response("During Beta, only 10 analyses can be ran a day")
       return
     end
 

@@ -8,6 +8,9 @@ class StaticController < ApplicationController
   def bwhq_how_to
   end
 
+  def landing
+  end
+
   def contact
     if request.post?
       email = params[:email]

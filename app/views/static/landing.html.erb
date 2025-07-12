@@ -1,0 +1,387 @@
+<div class="flex h-full flex-col expansion-alids-init bg-gray-900 text-white">
+
+<header class="py-10">
+  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="relative z-50 flex justify-between">
+      <div class="flex items-center md:gap-x-12">
+        <%= link_to root_path, aria: { label: "Home" } do %>
+          <div class="flex-auto lg:col-start-6 lg:row-start-1 xl:col-span-8 xl:col-start-5 font-bold text-2xl text-white">
+            PifuGlow
+          </div>
+        <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bg-gray-900">
+  <h1 class="mx-auto max-w-5xl font-display text-4xl text-center font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+    AI-Powered Skincare Analysis
+  </h1>
+  <p class="mx-auto mt-6 max-w-2xl text-lg text-center tracking-tight text-gray-400 font-light">
+    Snap a selfie and get personalized skincare routines, meal analysis, and product recommendations powered by advanced AI.
+  </p>
+  <div class="mt-8 flex justify-center gap-x-6">
+    <%= link_to "https://discord.gg/NBWCKsGhW7", target: "_blank", class: "inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors duration-200" do %>
+      <i class="fab fa-discord mr-2 text-xl"></i>
+      Join Discord for Early Access
+    <% end %>
+  </div>
+  
+  </div>
+  <div class="flex justify-center bg-gray-900">
+    <%= image_tag "hero_cover.png", class: "object-cover", alt: "PifuGlow App Interface", width: 600 %>
+  </div>
+</div>
+
+<section id="features" class="bg-gray-900">
+  <div class="mx-auto max-w-5xl md:text-center px-3 sm:px-6 lg:px-8">
+    <h2 class="font-display text-3xl tracking-tight text-center text-white sm:text-5xl pt-6">
+      Your Personal Skincare AI Assistant
+    </h2>
+    <p class="mt-4 text-lg tracking-tight text-center text-gray-400">
+      Three powerful AI features that revolutionize how you care for your skin.
+    </p>
+  </div>
+
+  <div class="container mx-auto lg:max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div class="flex flex-col items-center text-center bg-gray-800 rounded-2xl p-8 border border-gray-700 hover:bg-gray-750 transition-all duration-300">
+        <div class="mb-4">
+          <i class="fa-solid fa-camera fa-3x text-orange-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Selfie Skin Analysis</h3>
+        <p class="mt-4 text-sm text-gray-300">
+          Take a selfie and get instant analysis of your skin condition, personalized skincare routines, and dietary recommendations tailored to your unique skin needs.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center bg-gray-800 rounded-2xl p-8 border border-gray-700 hover:bg-gray-750 transition-all duration-300">
+        <div class="mb-4">
+          <i class="fa-solid fa-utensils fa-3x text-orange-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Meal Analysis</h3>
+        <p class="mt-4 text-sm text-gray-300">
+          Snap a photo of your meal and discover its antioxidant vs oxidant breakdown. Learn how your food choices impact your skin health and glow.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center bg-gray-800 rounded-2xl p-8 border border-gray-700 hover:bg-gray-750 transition-all duration-300">
+        <div class="mb-4">
+          <i class="fa-solid fa-flask fa-3x text-orange-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Product Scanner</h3>
+        <p class="mt-4 text-sm text-gray-300">
+          Photograph any skincare product to get detailed analysis of its benefits, potential drawbacks, and compatibility with your skin type.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto lg:max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-chart-line fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Progress Tracking</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          <b>Watch your skin transform week by week.</b> 
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          Track your skin improvement over time with regular analysis and see how your routine changes impact your skin health with visual proof that keeps you motivated
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-arrows-rotate fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Adaptive Routine Adjustments</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          <b>Never plateau again.</b> 
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          Our AI analyzes your past selfies to track skin changes and automatically adjusts your routine, ensuring you keep glowing brighter every month
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-star fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Personalized Recommendations</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          <b>Skip the trial-and-error phase.</b> 
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          Receive tailored product and routine recommendations based on your unique skin analysis that actually work for YOUR skin from day one.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-shield-check fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Ingredient Safety</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          <b>Protect your skin investment.</b> 
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          Scan products to identify potentially harmful ingredients that could undo months of progress and get safer alternatives for your skin type
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-puzzle-piece fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Complement Your Collection</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          <b>Maximize what you already own.</b> 
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          Share your current skincare products with us, and we'll recommend complementary pieces that transform your collection into a powerhouse routine
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-mobile-screen-button fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Instant Analysis</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          <b>End the guesswork forever.</b> 
+        </p>
+        <p class="mt-2 text-xs text-gray-400">
+          Get real-time skin analysis results in seconds, making skincare decisions easier and giving you instant answers about what's working for your best skin yet
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mx-auto max-w-5xl md:text-center px-3 sm:px-6 lg:px-8 mt-24">
+    <h2 class="font-display text-3xl tracking-tight text-center text-white sm:text-5xl mt-6">
+      Life-Changing Benefits of Healthy Skin
+    </h2>
+    <p class="mt-4 text-lg tracking-tight text-center text-gray-400">
+      Research shows that proper skincare isn't just about appearance—it's crucial to your health, confidence, and quality of life.
+    </p>
+  </div>
+
+  <div class="container mx-auto lg:max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <svg class="h-8 w-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-white">Barrier Protection</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          Healthy skin acts as your first line of defense against environmental toxins, UV radiation, and harmful bacteria.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-virus-covid fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Immune System Support</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          Proper skincare strengthens your skin's natural barrier, reducing inflammation and supporting overall immune function.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-brain fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Mental Health Benefits</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          Clear, healthy skin significantly improves self-esteem and confidence, reducing anxiety and depression related to appearance.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-leaf fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Anti-Aging Power</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          Antioxidant-rich foods and proper skincare fight free radicals, preventing premature aging and maintaining youthful skin.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-sad-tear fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Stress Reduction</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          Taking care of your skin creates a mindful routine that reduces cortisol levels and promotes mental wellbeing.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="mb-4">
+          <i class="fa-solid fa-sun fa-2x text-orange-400"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Cancer Prevention</h3>
+        <p class="mt-2 text-sm text-gray-400">
+          Proper sun protection and skincare significantly reduce the risk of skin cancer, the most common form of cancer.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 sm:py-22 bg-gray-900">
+  <div class="md:text-center px-3 sm:px-6 lg:px-8">
+    <h2 class="font-display font-bold text-3xl tracking-tight text-center text-white sm:text-5xl mt-3">
+      Great skin isn't luck – It's smart choices.
+    </h2>
+    <div class="mt-8 flex justify-center gap-x-6">
+      <%= link_to "https://discord.gg/NBWCKsGhW7", target: "_blank", class: "inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors duration-200" do %>
+        <i class="fab fa-discord mr-2 text-xl"></i>
+        Join Discord for Early Access
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<div class="relative mx-auto px-4 sm:px-6 lg:px-8 bg-gray-900">
+  <section id="faq" aria-labelledby="faq-title" class="relative overflow-hidden py-20 sm:py-32">
+    <div class="container mx-auto lg:max-w-7xl">
+      <div class="py-6">
+        <h2 id="faq-title" class="font-display text-3xl tracking-tight text-center text-white sm:text-5xl">
+          Frequently asked questions
+        </h2>
+        <p class="mt-4 text-xl font-light text-center tracking-tight text-gray-400">
+          Get quick answers about PifuGlow's AI skincare analysis
+        </p>
+
+        <dl class="container mt-10 space-y-6 divide-y divide-gray-700">
+          <% @faqs = [
+            {
+              question: "How accurate is the AI skin analysis?",
+              answer: "Our AI is trained on thousands of dermatological images and continuously updates itself with the latest dermotological innovations. While highly accurate for general skin analysis, we always recommend consulting with a dermatologist for serious skin concerns."
+            },
+            {
+              question: "Is my photo data secure and private?",
+              answer: "Absolutely. All photos are processed securely and encrypted. Your photos can only be accessed through your account. Your privacy is our top priority."
+            },
+            {
+              question: "How does the meal analysis work?",
+              answer: "Our AI identifies food items in your photo and analyzes their antioxidant and oxidant content. For the best skin health, ideally, you'd want food with higher antioxidant and lower oxidant levels."
+            },
+            {
+              question: "Can I use this for product recommendations?",
+              answer: "Yes! After analyzing your skin, PifuGlow provides personalized product recommendations. You can also scan existing products to see if they're compatible with your skin type and concerns."
+            },
+            {
+              question: "Is the app free to use?",
+              answer: "PifuGlow is free for all casual users (2-4 scans per month). For more serious users who want to keep on top of their glow, there is a very affordable monthly and annual plan."
+            },
+            {
+              question: "Do you offer refunds?",
+              answer: "Since we distribute through Apple and Google, all refunds and subscriptions management are handled through your Apple and Google Account."
+            },
+            {
+              question: "When will I start seeing results?",
+              answer: "This varies by individuals and how well you stick to the plan. Contrary to popular belief, we at Pifuglow do believe your diet is the #1 contributor to glowing skin."
+            },
+            {
+              question: "Where do I go to get help?",
+              answer:  "Easy. Just send an email to <a href=\"mailto:donald@pifuglow.com\" class=\"text-blue-500 hover:underline\">donald@pifuglow.com</a>".html_safe
+            },
+          ] %>
+          
+          <% @faqs.each_with_index do |faq, index| %>
+            <div class="pt-6">
+              <dt>
+                <button type="button" class="flex w-full items-start justify-between text-left text-white" aria-controls="faq-<%= index %>" aria-expanded="false">
+                  <span class="text-base font-semibold leading-7"><%= faq[:question] %></span>
+                  <span class="ml-6 flex h-7 items-center">
+                    <svg class="h-6 w-6 plus-icon" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                    </svg>
+                    <svg class="hidden h-6 w-6 minus-icon" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                    </svg>
+                  </span>
+                </button>
+              </dt>
+              <dd class="mt-2 pr-12 hidden" id="faq-<%= index %>">
+                <p class="text-base leading-7 text-gray-400"><%= faq[:answer] %></p>
+              </dd>
+            </div>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+
+    <div class="md:text-center px-3 sm:px-6 lg:px-8">
+      <h2 class="font-display font-light text-3xl tracking-tight text-center text-white sm:text-5xl mt-24">
+        Ready to Glow – Naturally?
+      </h2>
+      <div class="mt-8 flex justify-center gap-x-6">
+        <%= link_to "https://discord.gg/NBWCKsGhW7", target: "_blank", class: "inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors duration-200" do %>
+          <i class="fab fa-discord mr-2 text-xl"></i>
+          Join Discord for Early Access
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="py-16">
+        <nav class="mt-10 text-md" aria-label="quick links">
+          <div class="-my-1 flex justify-center gap-x-6">
+            <%= link_to "Features", "#features", class: "text-gray-400 hover:text-white" %>
+            <%= link_to "FAQ", "#faq", class: "text-gray-400 hover:text-white" %>
+            <%= link_to "Terms & Conditions", terms_path, target: "_blank", class: "text-gray-400 hover:text-white" %>
+            <%= link_to "Privacy Policy", privacy_path, target: "_blank", class: "text-gray-400 hover:text-white" %>
+          </div>
+        </nav>
+      </div>
+      <div class="flex flex-col items-center border-t border-gray-600 py-10 sm:flex-row-reverse sm:justify-between">
+        <div class="flex gap-x-6">
+          <%= link_to "#", class: "group hidden", aria_label: "PifuGlow on X", target: "_blank", rel: "noopener noreferrer" do %>
+            <svg
+              class="h-6 w-6 fill-gray-400 group-hover:fill-white"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+            >
+              <path d="M13.3174 10.7749L19.1457 4H17.7646L12.7039 9.88256L8.66193 4H4L10.1122 12.8955L4 20H5.38119L10.7254 13.7878L14.994 20H19.656L13.3171 10.7749H13.3174ZM11.4257 12.9738L10.8064 12.0881L5.87886 5.03974H8.00029L11.9769 10.728L12.5962 11.6137L17.7652 19.0075H15.6438L11.4257 12.9742V12.9738Z" />
+            </svg>
+          <% end %>
+        </div>
+        <p class="mt-6 text-sm text-gray-400 sm:mt-0">
+          Copyright &copy; <%= Time.current.year %> PifuGlow. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('dl button').on('click', function() {
+      var $button = $(this);
+      var $dd = $button.closest('dt').next('dd');
+      var isExpanded = $button.attr('aria-expanded') === 'true';
+
+      // Toggle the visibility of the answer
+      $dd.toggleClass('hidden');
+
+      // Toggle the aria-expanded attribute
+      $button.attr('aria-expanded', !isExpanded);
+
+      // Toggle the plus/minus icons
+      $button.find('.plus-icon, .minus-icon').toggleClass('hidden');
+    });
+  });
+</script>

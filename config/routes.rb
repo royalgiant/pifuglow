@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index]
   resources :skincare_analyses, only: [:index, :show, :new, :create, :destroy]
-  root to: "skincare_analyses#new"
+  root to: "static#landing"
 
   scope controller: :static do
     get :terms
