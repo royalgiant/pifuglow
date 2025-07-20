@@ -20,14 +20,21 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 
     <% if Rails.env.production? %>
+      <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P5ZZ6WCP');</script>
+      <!-- End Google Tag Manager -->
       <!-- Google Analytics -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-M6QZBJLGSK"></script>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLZL4ZH3QD"></script>
       <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-M6QZBJLGSK');
+        gtag('config', 'G-BLZL4ZH3QD');
       </script>
       <!-- End Google Analytics -->
       <!-- Posthog Code -->
@@ -46,6 +53,10 @@
   </div>
 
   <body class="h-full bg-gradient-to-b from-indigo-50 to-gray-100 bg-white text-black">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5ZZ6WCP"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div class="min-h-screen">
       <%= yield %>
     </div>
