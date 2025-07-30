@@ -59,7 +59,7 @@ class SkincareAnalysesController < ApplicationController
         # Get analysis result before saving
         begin
           analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, mobile_request?, current_user)
-          @skincare_analysis.diagnosis = analysis_result[:diagnosis]
+          @skincare_analysis.diagnosis = analysis_result[:diagnosis].to_json
           @skincare_analysis.category = analysis_result[:diagnosis]["category"] if mobile_request?
           
           # Single save with all data

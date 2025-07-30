@@ -37,16 +37,25 @@ class OpenaiAnalysisService
         
         {
           "condition": {
-            "primary_concerns": ["Acne (moderate)", "Dryness around cheeks"],
-            "severity": "The acne appears moderate with some inflammatory lesions. Skin shows signs of dehydration.",
-            "causes": ["Hormonal changes", "Over-cleansing", "Lack of moisturization"]
+            "primary_observations": [
+              "Slight shine in the T-zone",
+              "Some texture or unevenness on cheeks",
+              "Skin may appear mildly dry in some areas"
+            ],
+            "summary": "Skin shows a mix of oiliness and dryness, which may be common with combination skin types.",
+            "possible_factors": [
+              "Lifestyle or environmental exposure",
+              "Washing the face too frequently",
+              "Lack of consistent hydration"
+            ]
           },
           "products": [
-            "CeraVe Foaming Facial Cleanser - gentle cleansing without over-drying",
-            "The Ordinary Niacinamide 10% + Zinc 1% - reduces acne and oil production",
-            "CeraVe Daily Moisturizing Lotion - lightweight hydration",
-            "EltaMD UV Clear SPF 46 - non-comedogenic sun protection"
+            "CeraVe Foaming Facial Cleanser – commonly used by individuals with combination or oily skin types",
+            "The Ordinary Niacinamide 10% + Zinc 1% – popular for routines focused on visible texture and shine",
+            "CeraVe Daily Moisturizing Lotion – lightweight hydration often used for everyday care",
+            "EltaMD UV Clear SPF 46 – frequently chosen for its lightweight sun protection"
           ],
+          "disclaimer": "Note: These suggestions are for general skincare guidance only and do not constitute medical advice.",
           "routine": {
             "morning": [
               "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
@@ -173,35 +182,42 @@ class OpenaiAnalysisService
 
   def parse_openai_response(response, json_requested = false)
     content = response.dig("choices", 0, "message", "content")
-    
+    parsed_content = nil
+  
     if json_requested && content
-      # Try to extract and parse JSON if it's wrapped in markdown code blocks
+      json_string = nil
+  
+      # Extract from markdown block
       if content.include?('```json')
         json_match = content.match(/```json\s*(\{.*?\})\s*```/m)
-        if json_match
-          begin
-            parsed_content = JSON.parse(json_match[1])
-          rescue JSON::ParserError => e
-            Rails.logger.error "Failed to parse JSON from OpenAI response: #{e.message}"
-            parsed_content = content # Fall back to raw content
-          end
-        else
-          parsed_content = content
-        end
+        json_string = json_match[1] if json_match
       else
-        # Try to parse as direct JSON
+        json_string = content
+      end
+  
+      if json_string
         begin
-          parsed_content = JSON.parse(content)
-        rescue JSON::ParserError
-          parsed_content = content
+          parsed_content = JSON.parse(json_string)
+        rescue JSON::ParserError => e
+          Rails.logger.warn "Initial JSON parse failed: #{e.message}"
+          
+          # Try sanitizing Ruby hash (e.g. `=>`, nil)
+          sanitized = json_string
+                        .gsub(/=>/, ':')
+                        .gsub(/nil/, 'null')
+                        .gsub(/:(\s)?([a-zA-Z_][a-zA-Z0-9_]*)/, ':"\\2"') # unquoted keys
+          begin
+            parsed_content = JSON.parse(sanitized)
+          rescue JSON::ParserError => fallback_error
+            Rails.logger.error "Sanitized parse failed: #{fallback_error.message}"
+            parsed_content = nil
+          end
         end
       end
-    else
-      parsed_content = content
     end
-
+  
     {
-      diagnosis: parsed_content,
+      diagnosis: parsed_content || {},
       timestamp: Time.current,
       model_info: {
         name: response["model"],
@@ -212,5 +228,5 @@ class OpenaiAnalysisService
         }
       }
     }
-  end
+  end  
 end
