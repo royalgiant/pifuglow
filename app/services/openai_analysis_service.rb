@@ -70,7 +70,7 @@ class OpenaiAnalysisService
           "category": "skin"
         }
     
-        If it's a food picture, analyze each item for antioxidants vs oxidants levels. Make sure the percentage of oxidants and antioxidants add up to 100% and round up the the nearest integer, and return in JSON format:
+        If it's a food picture, analyze each item for antioxidants vs oxidants levels. Make sure the percentage of oxidants and antioxidants add up to 100% and round up the the nearest integer and give a descriptive breakdown of the effects on skin, and return in JSON format:
         {
           "ingredients": [
             "Congee with preserved vegetables: 40% oxidants, 60% antioxidants",
@@ -81,20 +81,25 @@ class OpenaiAnalysisService
           "skin_health": "4/10",
           "total_oxidants": "63%",
           "total_antioxidants": "37%",
-          "category": "meal"
+          "category": "meal",
+          "effects_on_skin": "The meal scores low on skin health, the fried dough stick and scallion pancake are high in oxidants, which can worsen acne or cause a breakout. The congee with preserved vegetables is high in antioxidants, which can help protect skin damage and reduce aging."
         }
         
-        If it's a skincare product, analyze the ingredients based on the user's skin problem (#{user.skin_problem.present? ? user.skin_problem : "general skin health"}) and return in JSON format:
+        If it's a skincare product, analyze for ingredients of the skincare product that affects the user's skin problem (#{user.skin_problem.present? ? user.skin_problem : "general skin health"}). Give a descriptive breakdown and return in JSON format like so:
         {
           "good_ingredients": [
             "Niacinamide - reduces oil production and minimizes pores, excellent for acne-prone skin",
             "Hyaluronic Acid - provides deep hydration without clogging pores",
-            "Salicylic Acid - gentle exfoliation helps unclog pores and reduce breakouts"
+            "Salicylic Acid - gentle exfoliation helps unclog pores and reduce breakouts",
+            "Snail Secretion Filtrate - promotes healing and boosts hydration, great for irritated or damaged skin",
+            "Allantoin - soothes and protects skin barrier, helps with inflammation and dryness",
+            "Panthenol - improves moisture retention and skin elasticity, calms irritation"
           ],
           "bad_ingredients": [
             "Coconut Oil - highly comedogenic and can clog pores, may worsen acne",
             "Fragrance - can cause irritation and inflammation, especially problematic for sensitive acne-prone skin",
-            "Isopropyl Myristate - known pore-clogging ingredient that can trigger breakouts"
+            "Isopropyl Myristate - known pore-clogging ingredient that can trigger breakouts",
+            "Phenoxyethanol - can cause irritation for sensitive skin when used in high concentrations"
           ],
           "category": "product"
         }
