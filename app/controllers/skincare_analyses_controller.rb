@@ -1,5 +1,5 @@
 class SkincareAnalysesController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create], if: -> { 
+  skip_before_action :verify_authenticity_token, only: [:create, :destroy], if: -> { 
     request.format.json? || mobile_request?
   }
 
@@ -81,6 +81,29 @@ class SkincareAnalysesController < ApplicationController
       end
     else
       render_error_response(@skincare_analysis.errors.full_messages.join(", "))
+    end
+  end
+
+  def destroy
+    begin
+      @skincare_analysis = SkincareAnalysis.find(params[:id])
+      @skincare_analysis.destroy
+      
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: "Analysis deleted successfully" }
+        format.json { render json: { message: "Analysis deleted successfully" }, status: :ok }
+      end
+    rescue ActiveRecord::RecordNotFound
+      respond_to do |format|
+        format.html { redirect_to root_path, alert: "Analysis not found" }
+        format.json { render json: { error: "Analysis not found" }, status: :not_found }
+      end
+    rescue StandardError => e
+      Rails.logger.error("Failed to delete analysis: #{e.message}")
+      respond_to do |format|
+        format.html { redirect_to root_path, alert: "Failed to delete analysis" }
+        format.json { render json: { error: "Failed to delete analysis" }, status: :internal_server_error }
+      end
     end
   end
 
