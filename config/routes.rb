@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'users/settings', to: 'users#get_settings'
       patch 'users/settings', to: 'users#update_settings'
+      delete 'users/:id', to: 'users#destroy'
       resources :error_logs, only: [:create]
     end
     post 'auth/social', to: 'auth#social'

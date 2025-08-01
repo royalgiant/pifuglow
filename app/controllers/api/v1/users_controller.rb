@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create], if: -> { 
+  skip_before_action :verify_authenticity_token, only: [:create, :destroy], if: -> { 
     request.format.json? || mobile_request?
   }
 
@@ -80,6 +80,34 @@ class Api::V1::UsersController < ApplicationController
         message: 'Failed to update settings',
         errors: user.errors.full_messages
       }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    begin
+      user = User.find(params[:id])
+      
+      if user.destroy
+        render json: {
+          message: 'Account deleted successfully'
+        }, status: :ok
+      else
+        render json: {
+          message: 'Failed to delete account',
+          errors: user.errors.full_messages
+        }, status: :unprocessable_entity
+      end
+    rescue ActiveRecord::RecordNotFound
+      render json: {
+        message: 'User not found',
+        error: 'No user found with that ID'
+      }, status: :not_found
+    rescue StandardError => e
+      Rails.logger.error("Failed to delete user: #{e.message}")
+      render json: {
+        message: 'Failed to delete account',
+        error: 'An unexpected error occurred'
+      }, status: :internal_server_error
     end
   end
 
