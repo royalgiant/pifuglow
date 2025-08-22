@@ -10,6 +10,9 @@ class User < ApplicationRecord
   has_many :user_identities, dependent: :destroy
   has_many :skincare_analysis, dependent: :destroy
 
+  serialize :skin_concerns, type: Array
+  serialize :skin_profile, type: Hash
+
   validates :email, presence: true, uniqueness: true
   validates :uid, uniqueness: { scope: :provider }, allow_nil: true
   validates_presence_of :first_name, unless: :skip_validation

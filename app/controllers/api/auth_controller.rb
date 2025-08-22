@@ -3,7 +3,8 @@ class Api::AuthController < ApplicationController
   
   def social
     begin
-      user_params = params.require(:user).permit(:email, :name, :provider, :provider_uid)
+      user_params = params.require(:user).permit(:email, :name, :provider, :provider_uid, 
+                                                  :skin_goal, :attribution_source, skin_concerns: [], skin_profile: {})
       
       # Try to find existing identity
       identity = UserIdentity.find_by(
@@ -19,6 +20,8 @@ class Api::AuthController < ApplicationController
         if user_params[:email].present? && user.email.blank?
           user.update(email: user_params[:email])
         end
+        
+        update_onboarding_data(user, user_params)
         
         render json: { 
           success: true, 
@@ -57,6 +60,10 @@ class Api::AuthController < ApplicationController
             full_name: full_name,
             email: email,
             password: Devise.friendly_token[0, 20],
+            skin_concerns: user_params[:skin_concerns]&.to_a,
+            skin_profile: user_params[:skin_profile]&.as_json,
+            skin_goal: user_params[:skin_goal],
+            attribution_source: user_params[:attribution_source]
           )
           
           if user.save
@@ -84,6 +91,8 @@ class Api::AuthController < ApplicationController
             uid: user_params[:provider_uid]
           )
           
+          update_onboarding_data(user, user_params)
+
           render json: { 
             success: true, 
             user: user_response(user),
@@ -118,7 +127,22 @@ class Api::AuthController < ApplicationController
       id: user.id,
       email: user.email,
       name: user.full_name,
-      created_at: user.created_at
+      created_at: user.created_at,
+      skin_concerns: user.skin_concerns,
+      skin_profile: user.skin_profile,
+      skin_goal: user.skin_goal,
+      attribution_source: user.attribution_source
     }
+  end
+  
+  def update_onboarding_data(user, params)
+    update_attrs = {}
+    
+    update_attrs[:skin_concerns] = params[:skin_concerns].to_a if params[:skin_concerns].present?
+    update_attrs[:skin_profile] = params[:skin_profile].as_json if params[:skin_profile].present?
+    update_attrs[:skin_goal] = params[:skin_goal] if params[:skin_goal].present?
+    update_attrs[:attribution_source] = params[:attribution_source] if params[:attribution_source].present?
+    
+    user.update(update_attrs) if update_attrs.any?
   end
 end
