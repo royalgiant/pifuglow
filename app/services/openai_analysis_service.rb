@@ -74,7 +74,8 @@ class OpenaiAnalysisService
             "Green tea - anti-inflammatory properties help calm irritated skin",
             "Avoid dairy and high-glycemic foods which can trigger acne flare-ups"
           ],
-          "category": "skin"
+          "category": "skin",
+          "skin_health": "5/10"
         }
 
         #{if subscribed && previous_analysis && previous_analysis[:primary_observations] && previous_analysis[:summary]
