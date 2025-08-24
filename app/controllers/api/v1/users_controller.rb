@@ -14,6 +14,11 @@ class Api::V1::UsersController < ApplicationController
       return
     end
 
+    # Calculate health scores for the last 7 days
+    overall_skin_health_score = calculate_overall_skin_health_score(user)
+    weekly_skin_health_score = calculate_weekly_skin_health_score(user)
+    weekly_meal_health_score = calculate_weekly_meal_health_score(user)
+
     render json: {
       user: {
         id: user.id,
@@ -21,7 +26,10 @@ class Api::V1::UsersController < ApplicationController
         first_name: user.first_name,
         last_name: user.last_name,
         current_products: user.current_products,
-        skin_problem: user.skin_problem
+        skin_problem: user.skin_problem,
+        overall_skin_health_score: overall_skin_health_score,
+        weekly_skin_health_score: weekly_skin_health_score,
+        weekly_meal_health_score: weekly_meal_health_score
       }
     }, status: :ok
   end
@@ -64,6 +72,11 @@ class Api::V1::UsersController < ApplicationController
     end
 
     if user.update(params_with_full_name)
+      # Calculate health scores for the updated user
+      overall_skin_health_score = calculate_overall_skin_health_score(user)
+      weekly_skin_health_score = calculate_weekly_skin_health_score(user)
+      weekly_meal_health_score = calculate_weekly_meal_health_score(user)
+
       render json: {
         message: 'Settings updated successfully. If you updated your email, please confirm your email.',
         user: {
@@ -72,7 +85,10 @@ class Api::V1::UsersController < ApplicationController
           first_name: user.first_name,
           last_name: user.last_name,
           current_products: user.current_products,
-          skin_problem: user.skin_problem
+          skin_problem: user.skin_problem,
+          overall_skin_health_score: overall_skin_health_score,
+          weekly_skin_health_score: weekly_skin_health_score,
+          weekly_meal_health_score: weekly_meal_health_score
         }
       }, status: :ok
     else
@@ -115,5 +131,77 @@ class Api::V1::UsersController < ApplicationController
 
   def user_settings_params
     params.require(:user).permit(:email, :first_name, :last_name, :current_products, :skin_problem, :full_name)
+  end
+
+  def health_score_base_query(user)
+    week_ago = 7.days.ago
+    user.skincare_analysis
+      .where(created_at: week_ago..Time.current)
+      .where.not(diagnosis: [nil, ''])
+      .where("diagnosis::jsonb ? 'skin_health'")
+  end
+
+  def calculate_overall_skin_health_score(user)
+    week_ago = 7.days.ago
+    sql = <<~SQL
+      SELECT AVG(CAST(SPLIT_PART(diagnosis::jsonb->>'skin_health', '/', 1) AS FLOAT)) as avg_score 
+      FROM skincare_analyses 
+      WHERE user_id = $1 
+        AND created_at BETWEEN $2 AND $3
+        AND diagnosis IS NOT NULL 
+        AND diagnosis != '' 
+        AND diagnosis::jsonb ? 'skin_health'
+    SQL
+    
+    result = ActiveRecord::Base.connection.exec_query(sql, 'calculate_overall_skin_health_score', [
+      user.id,
+      week_ago,
+      Time.current
+    ]).first
+    result&.dig('avg_score')&.to_f&.ceil
+  end
+
+  def calculate_weekly_skin_health_score(user)
+    week_ago = 7.days.ago
+    sql = <<~SQL
+      SELECT AVG(CAST(SPLIT_PART(diagnosis::jsonb->>'skin_health', '/', 1) AS FLOAT)) as avg_score 
+      FROM skincare_analyses 
+      WHERE user_id = $1 
+        AND created_at BETWEEN $2 AND $3
+        AND diagnosis IS NOT NULL 
+        AND diagnosis != '' 
+        AND diagnosis::jsonb ? 'skin_health'
+        AND category = $4
+    SQL
+    
+    result = ActiveRecord::Base.connection.exec_query(sql, 'calculate_weekly_skin_health_score', [
+      user.id,
+      week_ago,
+      Time.current,
+      'skin'
+    ]).first
+    result&.dig('avg_score')&.to_f&.ceil
+  end
+
+  def calculate_weekly_meal_health_score(user)
+    week_ago = 7.days.ago
+    sql = <<~SQL
+      SELECT AVG(CAST(SPLIT_PART(diagnosis::jsonb->>'skin_health', '/', 1) AS FLOAT)) as avg_score 
+      FROM skincare_analyses 
+      WHERE user_id = $1 
+        AND created_at BETWEEN $2 AND $3
+        AND diagnosis IS NOT NULL 
+        AND diagnosis != '' 
+        AND diagnosis::jsonb ? 'skin_health'
+        AND category = $4
+    SQL
+    
+    result = ActiveRecord::Base.connection.exec_query(sql, 'calculate_weekly_meal_health_score', [
+      user.id,
+      week_ago,
+      Time.current,
+      'meal'
+    ]).first
+    result&.dig('avg_score')&.to_f&.ceil
   end
 end
