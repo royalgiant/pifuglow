@@ -2,15 +2,15 @@ class OpenaiAnalysisService
   MAX_RETRIES = 10
   INITIAL_DELAY = 1
 
-  def analyze_image(image_url, mobile_request = false, user = nil)
-    prompt = generate_analysis_prompt(mobile_request, user)
+  def analyze_image(image_url, mobile_request = false, user = nil, subscribed = false, previous_analysis = nil)
+    prompt = generate_analysis_prompt(mobile_request, user, subscribed, previous_analysis)
     response = call_openai_api(prompt, image_url)
     parse_openai_response(response, mobile_request)
   end
 
   private
 
-  def generate_analysis_prompt(mobile_request, user)
+  def generate_analysis_prompt(mobile_request, user, subscribed, previous_analysis = nil)
     base_prompt = <<~PROMPT
       Analyze this selfie image for skin conditions and provide a diagnosis:
       1. Identify any visible skin conditions (e.g., acne, dryness, redness, hyperpigmentation).
@@ -33,8 +33,6 @@ class OpenaiAnalysisService
         First, analyze whether the image is a selfie, food picture, or skincare product.
         
         If it's a selfie, return response in JSON format with these exact keys:
-        steps 1, 2, and 3 should be returned with key 'condition', step 4 returned with key 'products', step 5 with key 'routine', and step 6 with key 'diet'.
-        
         {
           "condition": {
             "primary_observations": [
@@ -78,6 +76,22 @@ class OpenaiAnalysisService
           ],
           "category": "skin"
         }
+
+        #{if subscribed && previous_analysis && previous_analysis[:primary_observations] && previous_analysis[:summary]
+          <<~PREVIOUS_ANALYSIS
+
+            IMPORTANT: This user is subscribed and has a previous skin analysis. Please compare the current skin selfie to their previous analysis:
+
+            Previous Analysis Summary: #{previous_analysis[:summary]}
+            Previous Primary Observations: #{previous_analysis[:primary_observations].join(', ')}
+
+            In your analysis, please:
+            - Compare the current skin condition to the previous analysis
+            - Note any improvements or changes since the last analysis
+            - Mention if the skin condition has gotten better, worse, or stayed the same
+            - Adjust your recommendations based on the progression from the previous analysis
+          PREVIOUS_ANALYSIS
+        end}
     
         If it's a food picture, analyze each item for antioxidants vs oxidants levels. Make sure the percentage of oxidants and antioxidants add up to 100% and round up the the nearest integer and give a descriptive breakdown of the effects on skin, and return in JSON format:
         {

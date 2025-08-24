@@ -34,7 +34,7 @@ class SkincareAnalysesController < ApplicationController
     request.format = :json if mobile_request?
 
     # Check subscription status and monthly limits
-    subscribed = params[:subscribed] == 'true' || params[:subscribed] == true
+    subscribed = ActiveModel::Type::Boolean.new.cast(params[:subscribed])
     unless subscribed
       month_start = Time.current.beginning_of_month
       month_end = Time.current.end_of_month
@@ -74,7 +74,20 @@ class SkincareAnalysesController < ApplicationController
         
         # Get analysis result before saving
         begin
-          analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, mobile_request?, current_user)
+          # Get previous analysis for subscribed users
+          previous_analysis = nil
+          if subscribed && current_user
+            last_analysis = current_user.skincare_analysis.where(category: "skin").order(created_at: :desc).first
+            if last_analysis && last_analysis.diagnosis.present?
+              previous_diagnosis = JSON.parse(last_analysis.diagnosis)
+              previous_analysis = {
+                primary_observations: previous_diagnosis.dig("condition", "primary_observations"),
+                summary: previous_diagnosis.dig("condition", "summary")
+              }
+            end
+          end
+
+          analysis_result = OpenaiAnalysisService.new.analyze_image(image_url, mobile_request?, current_user, subscribed, previous_analysis)
           @skincare_analysis.diagnosis = analysis_result[:diagnosis].to_json
           @skincare_analysis.category = analysis_result[:diagnosis]["category"] if mobile_request?
           
