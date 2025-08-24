@@ -33,6 +33,22 @@ class SkincareAnalysesController < ApplicationController
   def create
     request.format = :json if mobile_request?
 
+    # Check subscription status and monthly limits
+    subscribed = params[:subscribed] == 'true' || params[:subscribed] == true
+    unless subscribed
+      month_start = Time.current.beginning_of_month
+      month_end = Time.current.end_of_month
+      monthly_analysis_count = SkincareAnalysis.where(
+        email: skincare_analysis_params[:email],
+        created_at: month_start..month_end
+      ).count
+      
+      if monthly_analysis_count > 10
+        render_error_response("You have reached the monthly limit of scans for this month. For more scans, please upgrade to pro.")
+        return
+      end
+    end
+
     today_start = Time.current.beginning_of_day
     today_end = Time.current.end_of_day
     daily_analysis_count = SkincareAnalysis.where(
