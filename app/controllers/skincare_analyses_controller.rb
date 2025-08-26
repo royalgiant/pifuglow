@@ -34,7 +34,8 @@ class SkincareAnalysesController < ApplicationController
     request.format = :json if mobile_request?
 
     # Check subscription status and monthly limits
-    subscribed = ActiveModel::Type::Boolean.new.cast(params[:subscribed])
+    current_user = find_user
+    subscribed = ActiveModel::Type::Boolean.new.cast(params[:subscribed]) || current_user.is_lifetime? || current_user.is_admin?
     unless subscribed
       month_start = Time.current.beginning_of_month
       month_end = Time.current.end_of_month
@@ -67,7 +68,6 @@ class SkincareAnalysesController < ApplicationController
       image_url = handle_image_processing(skincare_analysis_params)
       if image_url
         # Set all attributes before the single save
-        current_user = find_user
         @skincare_analysis.image_url = image_url
         @skincare_analysis.request_type = mobile_request?
         @skincare_analysis.user_id = current_user.id

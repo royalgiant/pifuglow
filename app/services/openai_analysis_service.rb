@@ -87,7 +87,7 @@ class OpenaiAnalysisService
             Previous Primary Observations: #{previous_analysis[:primary_observations].join(', ')}
 
             In your analysis, please:
-            - Compare the current skin condition to the previous analysis
+            - Compare the current skin condition to the previous analysis AND most importantly, use language that indicates comparison to the previous analysis (e.g. "Your skin has improved compared to the last analysis")
             - Note any improvements or changes since the last analysis
             - Mention if the skin condition has gotten better, worse, or stayed the same
             - Adjust your recommendations based on the progression from the previous analysis

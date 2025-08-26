@@ -18,6 +18,9 @@ class User < ApplicationRecord
   validates_presence_of :first_name, unless: :skip_validation
   validates_presence_of :last_name, unless: :skip_validation
 
+  ADMIN = "admin"
+  LIFETIME = "lifetime"
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
@@ -39,6 +42,10 @@ class User < ApplicationRecord
 
   def is_admin?
     self.role == ADMIN
+  end
+
+  def is_lifetime?
+    self.role == LIFETIME
   end
 
   # Allow users to sign in without password if they use social auth
