@@ -29,7 +29,8 @@ class Api::V1::UsersController < ApplicationController
         skin_problem: user.skin_problem,
         overall_skin_health_score: overall_skin_health_score,
         weekly_skin_health_score: weekly_skin_health_score,
-        weekly_meal_health_score: weekly_meal_health_score
+        weekly_meal_health_score: weekly_meal_health_score,
+        superwall_user_id: user.superwall_user_id
       }
     }, status: :ok
   end
@@ -88,7 +89,8 @@ class Api::V1::UsersController < ApplicationController
           skin_problem: user.skin_problem,
           overall_skin_health_score: overall_skin_health_score,
           weekly_skin_health_score: weekly_skin_health_score,
-          weekly_meal_health_score: weekly_meal_health_score
+          weekly_meal_health_score: weekly_meal_health_score,
+          superwall_user_id: user.superwall_user_id
         }
       }, status: :ok
     else

@@ -135,3 +135,4 @@ end
 gem "httparty", "~> 0.22.0"
 gem "attr_encrypted", "~> 4.2"
 gem "csv", "~> 3.3"
+gem "uuidtools", "~> 2.2"

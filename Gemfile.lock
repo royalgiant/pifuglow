@@ -502,6 +502,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uri (1.0.3)
+    uuidtools (2.2.0)
     version_gem (1.1.8)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -588,6 +589,7 @@ DEPENDENCIES
   tailwindcss-rails
   turbo-rails
   tzinfo-data
+  uuidtools (~> 2.2)
   web-console
   webdrivers
 

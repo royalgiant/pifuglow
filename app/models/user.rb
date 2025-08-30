@@ -52,5 +52,10 @@ class User < ApplicationRecord
   def password_required?
     provider.blank? && super
   end
+
+  def superwall_user_id
+    namespace_uuid = UUIDTools::UUID.parse(Rails.application.credentials[Rails.env.to_sym].dig(:superwall, :uuid))
+    UUIDTools::UUID.sha1_create(namespace_uuid, self.id.to_s).to_s
+  end
          
 end
