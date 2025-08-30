@@ -27,4 +27,8 @@ class ApplicationController < ActionController::Base
       redirect_to root_path
     end
   end
+
+  def mobile_request?
+    request.headers['X-Mobile-App'] == 'true'
+  end
 end

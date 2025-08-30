@@ -170,9 +170,7 @@ class SkincareAnalysesController < ApplicationController
     end
   end
 
-  def mobile_request?
-    request.headers['X-Mobile-App'] == 'true'
-  end
+
 
   def send_analysis_email(email, diagnosis, image_url)
     Rails.logger.info "Sending analysis email to #{email} with diagnosis: #{diagnosis.truncate(100)}"

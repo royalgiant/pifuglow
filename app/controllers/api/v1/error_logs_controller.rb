@@ -1,10 +1,12 @@
 class Api::V1::ErrorLogsController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  
   def create
     error_log = ErrorLog.log_error(
-      context: error_params[:context],
-      error_message: error_params[:error_message],
-      error_code: error_params[:error_code],
-      metadata: error_params[:metadata] || {}
+      context: params[:context],
+      error_message: params.dig(:error, :message) || 'Unknown error',
+      error_code: params.dig(:error, :code),
+      metadata: params[:metadata] || {}
     )
 
     render json: { 
@@ -27,6 +29,6 @@ class Api::V1::ErrorLogsController < ApplicationController
   private
 
   def error_params
-    params.require(:error).permit(:context, :error_message, :error_code, metadata: {})
+    params.permit(:context, error: [:message, :code], metadata: {})
   end
 end
