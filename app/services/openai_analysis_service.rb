@@ -36,47 +36,49 @@ class OpenaiAnalysisService
         {
           "condition": {
             "primary_observations": [
-              "Slight shine in the T-zone",
-              "Some texture or unevenness on cheeks",
-              "Skin may appear mildly dry in some areas"
+              "Your skin shows natural shine in the T-zone, which is perfectly normal",
+              "Some beautiful texture variation on your cheeks that gives your skin character",
+              "Areas that could benefit from a little extra hydration - we've all been there!"
             ],
-            "summary": "Skin shows a mix of oiliness and dryness, which may be common with combination skin types.",
+            "summary": "Your skin is on a unique journey! You're dealing with combination skin, which is incredibly common and totally manageable with the right care routine.",
             "possible_factors": [
-              "Lifestyle or environmental exposure",
-              "Washing the face too frequently",
-              "Lack of consistent hydration"
+              "Life happens - stress, weather, and daily activities all play a role in how our skin looks",
+              "Sometimes we love our skin a little too much with frequent washing",
+              "Your skin might be asking for more consistent moisture - it's trying to tell you what it needs!"
             ]
           },
           "products": [
-            "CeraVe Foaming Facial Cleanser – commonly used by individuals with combination or oily skin types",
-            "The Ordinary Niacinamide 10% + Zinc 1% – popular for routines focused on visible texture and shine",
-            "CeraVe Daily Moisturizing Lotion – lightweight hydration often used for everyday care",
-            "EltaMD UV Clear SPF 46 – frequently chosen for its lightweight sun protection"
+            "CeraVe Foaming Facial Cleanser – a gentle favorite that works beautifully with combination skin",
+            "The Ordinary Niacinamide 10% + Zinc 1% – this powerhouse ingredient is loved by many for balancing skin texture",
+            "CeraVe Daily Moisturizing Lotion – lightweight comfort that your skin will thank you for",
+            "EltaMD UV Clear SPF 46 – protection that feels effortless and keeps your skin happy"
           ],
-          "disclaimer": "Note: These suggestions are for general skincare guidance only and do not constitute medical advice.",
+          "disclaimer": "Remember: These suggestions are personalized skincare guidance to support your journey, not medical advice. You're taking amazing steps by caring for your skin!",
           "routine": {
             "morning": [
-              "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
-              "Step 2: Apply The Ordinary Niacinamide serum", 
-              "Step 3: Moisturize with CeraVe Daily Moisturizing Lotion",
-              "Step 4: Apply EltaMD UV Clear SPF 46"
+              "Step 1: Start your day fresh with CeraVe Foaming Facial Cleanser",
+              "Step 2: Give your skin some love with The Ordinary Niacinamide serum", 
+              "Step 3: Hydrate beautifully with CeraVe Daily Moisturizing Lotion",
+              "Step 4: Protect your gorgeous skin with EltaMD UV Clear SPF 46"
             ],
             "evening": [
-              "Step 1: Cleanse with CeraVe Foaming Facial Cleanser",
-              "Step 2: Apply The Ordinary Niacinamide serum",
-              "Step 3: Moisturize with CeraVe PM Facial Moisturizing Lotion"
+              "Step 1: Gently cleanse away the day with CeraVe Foaming Facial Cleanser",
+              "Step 2: Treat your skin with The Ordinary Niacinamide serum",
+              "Step 3: End with nourishing CeraVe PM Facial Moisturizing Lotion for overnight repair"
             ]
           },
           "diet": [
-            "Salmon - omega-3 fatty acids reduce inflammation and support skin barrier",
-            "Spinach - vitamin A helps with skin cell turnover and acne healing",
-            "Blueberries - antioxidants protect against free radical damage",
-            "Green tea - anti-inflammatory properties help calm irritated skin",
-            "Avoid dairy and high-glycemic foods which can trigger acne flare-ups"
+            "Salmon - these omega-3s are like a hug for your skin, reducing inflammation naturally",
+            "Spinach - packed with vitamin A to help your skin regenerate and heal beautifully",
+            "Blueberries - nature's antioxidant powerhouse protecting your skin from daily stress",
+            "Green tea - a soothing ritual that calms both you and your skin from the inside out",
+            "Consider reducing dairy and high-sugar foods - your skin might respond with a happy glow!"
           ],
           "category": "skin",
           "skin_health": "5/10"
         }
+
+        IMPORTANT: Be inclusive, encouraging as if you're talking to your best friend who's nervous and anxious about their skin.
 
         #{if subscribed && previous_analysis && previous_analysis[:primary_observations] && previous_analysis[:summary]
           <<~PREVIOUS_ANALYSIS
