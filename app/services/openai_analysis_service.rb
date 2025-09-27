@@ -78,7 +78,9 @@ class OpenaiAnalysisService
           "skin_health": "5/10"
         }
 
-        IMPORTANT: Be inclusive, encouraging as if you're talking to your best friend who's nervous and anxious about their skin.
+        IMPORTANT: Be inclusive, encouraging as if you're talking to your best friend who's nervous and anxious about their skin. With skin_health rating, be forgiving and lenient. 
+        Ex. 10/10 if there's no acne or recent acne wounds, 8/10 if there's only some recent acne wounds, 6/10 if there's some acne but no dryness, 4/10 or 3/10 if there's a lot of acne and bad skin issues, etc. 
+        Do the same for older people who are concerned about wrinkles and fine lines (Ex. Having finelines isn't a bad thing, it's just a sign of aging, it should be a 9 or 8 / 10) 
 
         #{if subscribed && previous_analysis && previous_analysis[:primary_observations] && previous_analysis[:summary]
           <<~PREVIOUS_ANALYSIS
@@ -110,6 +112,8 @@ class OpenaiAnalysisService
           "category": "meal",
           "effects_on_skin": "The meal scores low on skin health, the fried dough stick and scallion pancake are high in oxidants, which can worsen acne or cause a breakout. The congee with preserved vegetables is high in antioxidants, which can help protect skin damage and reduce aging."
         }
+
+        IMPORTANT: When formulating the skin_health score, be sure to take the portion size of each ingredient and their respective antioxidant and oxidant levels into account.
         
         If it's a skincare product, analyze for ingredients of the skincare product that affects the user's skin problem (#{user.skin_problem.present? ? user.skin_problem : "general skin health"}). Give a descriptive breakdown and return in JSON format like so:
         {
