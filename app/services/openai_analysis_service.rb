@@ -171,7 +171,7 @@ class OpenaiAnalysisService
 
       client.chat(
         parameters: {
-          model: "gpt-4.1-mini",
+          model: "gpt-4o-mini",
           messages: [{ role: "user", content: messages }],
           max_tokens: 4096
         }
