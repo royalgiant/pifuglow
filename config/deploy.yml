@@ -7,14 +7,14 @@ image: donaldlee50/pifuglow
 # Deploy to these servers.
 servers:
   web:
-    - 95.216.161.144
+    - 135.181.151.68
   # job:
   #   hosts:
-  #     - 95.216.161.144
+  #     - 135.181.151.68
   #   cmd: bin/jobs
   cron:
     hosts:
-      - 95.216.161.144
+      - 135.181.151.68
     cmd:
       bash -c "bundle exec sidekiq"
     env:
@@ -92,10 +92,10 @@ aliases:
 # Use accessory services (secrets come from .kamal/secrets).
 #
 accessories:
-  # Reuse db from keepviews
+  # Reuse db from priorauthbridge
   db:
     image: postgres:16
-    host: 95.216.161.144
+    host: 135.181.151.68
     port: 5432
     env:
       clear:
@@ -110,7 +110,7 @@ accessories:
       - data:/var/lib/postgresql/data
   postgres-backups:
     image: eeshugerman/postgres-backup-s3:16
-    host: 95.216.161.144
+    host: 135.181.151.68
     env:
       clear:
         SCHEDULE: "05 00 * * *"
@@ -118,7 +118,7 @@ accessories:
         S3_REGION: us-east-2
         S3_BUCKET: pifuglow
         S3_PREFIX: postgres-backups
-        POSTGRES_HOST: 95.216.161.144
+        POSTGRES_HOST: 135.181.151.68
         POSTGRES_USER: "postgres"
         POSTGRES_DATABASE: "pifuglow_production"
       secret:
@@ -127,7 +127,7 @@ accessories:
         - S3_SECRET_ACCESS_KEY
   # redis:
   #   image: redis:7.2
-  #   host: 95.216.161.144
+  #   host: 135.181.151.68
   #   env:
   #     clear:
   #       RAILS_ENV: production
